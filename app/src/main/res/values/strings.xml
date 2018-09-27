@@ -3,6 +3,6 @@
     <string name="scan_button">Scan</string>
     <string name="data_button">Data Charts</string>
     <string name="welcome_text">Welcome!</string>
-    <string name="scan_descriptor">Click scan to begin saving battery and fix connection.</string>
+    <string name="scan_descriptor">Scan for nearby WiFi to find a better connection.</string>
     <string name="welcome_descriptor">TABLE will help you save battery while fixing your connection.</string>
 </resources>
