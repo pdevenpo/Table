@@ -7,8 +7,32 @@
     android:layout_height="match_parent"
     tools:context=".ScanActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primaryColor"
+        android:elevation="2dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:title="TABLE"
+        />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <fragment
+            android:id="@+id/recommendation"
+            android:name="edu.osu.table.ui.scan.ScanFragment"
+            android:layout_width="254dp"
+            android:layout_height="249dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="63dp"
+            android:layout_marginTop="131dp"
+            tools:layout="@layout/scan_fragment" />
+    </RelativeLayout>
 </FrameLayout>
 
 
