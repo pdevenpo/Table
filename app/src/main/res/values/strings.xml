@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">Table</string>
-    <string name="scan_button">Scan</string>
     <string name="data_button">Data Charts</string>
-    <string name="welcome_text">Welcome!</string>
+    <string name="action_back">Back</string>
+    <!-- Scan -->
+    <string name="scan_button">Scan</string>
     <string name="scan_descriptor">Scan for nearby WiFi to find a better connection.</string>
+    <!-- Welcome -->
+    <string name="welcome_button">Welcome!</string>
     <string name="welcome_descriptor">TABLE will help you save battery while fixing your connection.</string>
+    <!-- Recommendations -->
+    <string name="recommendation_button">Tips</string>
+    <string name="recommendation_descriptor">Click here to view recommendations made by TABLE.</string>
 </resources>
