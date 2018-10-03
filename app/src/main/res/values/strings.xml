@@ -2,6 +2,7 @@
     <string name="app_name">Table</string>
     <string name="data_button">Data Charts</string>
     <string name="action_back">Back</string>
+    <string name="action_menu">Menu</string>
     <!-- Scan -->
     <string name="scan_button">Scan</string>
     <string name="scan_descriptor">Scan for nearby WiFi to find a better connection.</string>

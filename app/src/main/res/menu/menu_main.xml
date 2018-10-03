@@ -7,4 +7,11 @@
         android:title="@string/action_back"
         app:showAsAction="ifRoom"
         />
+
+    <item
+        android:id="@+id/action_menu"
+        android:icon="@drawable/ic_menu_black_24dp"
+        android:title="@string/action_menu"
+        app:showAsAction="ifRoom"
+        />
 </menu>
