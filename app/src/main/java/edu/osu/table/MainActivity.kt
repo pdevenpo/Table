@@ -4,7 +4,6 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.content.Intent
 import android.media.MediaPlayer
-import android.provider.MediaStore
 import android.view.View
 import com.jjoe64.graphview.series.LineGraphSeries
 import com.jjoe64.graphview.GraphView
@@ -25,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         val series = LineGraphSeries<DataPoint>(arrayOf<DataPoint>(DataPoint(1.0, 1.0), DataPoint(1.0, 5.0), DataPoint(2.0, 3.0), DataPoint(3.0, 2.0), DataPoint(4.0, 6.0)))
         graph.addSeries(series)
         //has to be in java, no kotlin support
-        graph.setTitle("Battery Consumption")
+        graph.title = "Battery Consumption"
 
         //mp = MediaPlayer.create(this, R.raw.desperate_man)
         //mp.start()
