@@ -12,4 +12,7 @@
     <!-- Recommendations -->
     <string name="recommendation_button">Tips</string>
     <string name="recommendation_descriptor">Click here to view recommendations made by TABLE.</string>
+    <!-- Settings -->
+    <string name="settings_button">Settings</string>
+    <string name="settings_descriptor">Change options for scanning and background operations.</string>
 </resources>

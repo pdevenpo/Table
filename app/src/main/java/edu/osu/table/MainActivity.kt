@@ -3,6 +3,8 @@ package edu.osu.table
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.content.Intent
+import android.media.MediaPlayer
+import android.provider.MediaStore
 import android.view.View
 import com.jjoe64.graphview.series.LineGraphSeries
 import com.jjoe64.graphview.GraphView
@@ -10,6 +12,8 @@ import com.jjoe64.graphview.series.DataPoint
 
 
 class MainActivity : AppCompatActivity() {
+
+    //private lateinit var mp: MediaPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +27,9 @@ class MainActivity : AppCompatActivity() {
         //has to be in java, no kotlin support
         graph.setTitle("Battery Consumption")
 
+        //mp = MediaPlayer.create(this, R.raw.desperate_man)
+        //mp.start()
+
     }
 
 
@@ -35,6 +42,12 @@ class MainActivity : AppCompatActivity() {
     //Allow cardview click to go to scan activity
     fun onClickListenerScan(v: View) {
         val myIntent = Intent(baseContext, ScanActivity::class.java)
+        startActivity(myIntent)
+    }
+
+    //Allow cardview click to go to settings activity
+    fun onClickListenerSettings(v: View) {
+        val myIntent = Intent(baseContext, Settings::class.java)
         startActivity(myIntent)
     }
 
