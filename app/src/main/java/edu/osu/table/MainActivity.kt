@@ -50,5 +50,9 @@ class MainActivity : AppCompatActivity() {
         startActivity(myIntent)
     }
 
+    fun onClickListenerGraph(v: View) {
+        val myIntent = Intent(baseContext, Graph::class.java)
+        startActivity(myIntent)
+    }
 
 }
