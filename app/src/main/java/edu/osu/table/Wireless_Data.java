@@ -2,12 +2,14 @@ package edu.osu.table;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 @Entity
 public class Wireless_Data {
-    @PrimaryKey
     // TO DO - Want to make this required to be unique and indexed
+
+    @PrimaryKey
     private int uid;
 
     private String SSID;
