@@ -18,6 +18,15 @@ public class Wireless_Data {
     private int chan_freq;
     private int throughput_Mbps;
     private int battery_percentage;
+    private int time;
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
 
     public int getThroughput_Mbps() {
         return throughput_Mbps;
