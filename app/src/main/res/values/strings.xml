@@ -6,6 +6,7 @@
     <!-- Scan -->
     <string name="scan_button">Scan</string>
     <string name="scan_descriptor">Scan for nearby WiFi to find a better connection.</string>
+    <string name="scan_text">Scan</string>
     <!-- Welcome -->
     <string name="welcome_button">Welcome!</string>
     <string name="welcome_descriptor">TABLE will help you save battery while fixing your connection.</string>
@@ -15,4 +16,11 @@
     <!-- Settings -->
     <string name="settings_button">Settings</string>
     <string name="settings_descriptor">Change options for scanning and background operations.</string>
+
+    <!-- Professor Champion extra Strings -->
+    <string name="suppress_msg">Don\'t show this message again</string>
+    <string name="suppress_dialog_key">suppress_notice_dialog</string>
+    <string name="read_location_permission_denied">User denied request for location permission</string>
+
+
 </resources>

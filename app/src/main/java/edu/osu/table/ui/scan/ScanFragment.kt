@@ -18,7 +18,7 @@ class ScanFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.scan_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_wifi_scan, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

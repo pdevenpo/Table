@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     //Allow cardview click to go to scan activity
     fun onClickListenerScan(v: View) {
-        val myIntent = Intent(baseContext, ScanActivity::class.java)
+        val myIntent = Intent(baseContext, WifiScanActivity::class.java)
         startActivity(myIntent)
     }
 
