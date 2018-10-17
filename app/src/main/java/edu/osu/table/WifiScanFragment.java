@@ -125,7 +125,9 @@ public class WifiScanFragment extends Fragment {
 
         setHasOptionsMenu(true);
         setRetainInstance(true);
-
+        //added to start on initial load
+        //TODO Increase speed of this load
+        doWifiScan();
         return v;
     }
 
@@ -169,6 +171,7 @@ public class WifiScanFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    //give actions to actionbar items
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_scan:
@@ -254,10 +257,14 @@ public class WifiScanFragment extends Fragment {
 
         public void bind(ScanResult scanResult) {
             mScanResult = scanResult;
-            String resultTextStr = mScanResult.SSID + "; " + mScanResult.BSSID + "; " +
-                    mScanResult.capabilities + "; " + mScanResult.frequency + " MHz;" +
-                    mScanResult.level + " dBm";
+            String resultTextStr = "WIFI NAME: " + mScanResult.SSID + "; " + '\n' + "SECURITY: " +
+                    mScanResult.capabilities + "; " + '\n' + "FREQUENCY: " + mScanResult.frequency + " MHz;" + '\n' +
+                    "NOISE: " + mScanResult.level + " dBm";
             mScanResultTextView.setText(resultTextStr);
+            //original code text results
+//            String resultTextStr = "Wifi Name: " + mScanResult.SSID + "; " + mScanResult.BSSID + "; " +
+//                    mScanResult.capabilities + "; " + mScanResult.frequency + " MHz;" +
+//                    mScanResult.level + " dBm";
         }
     }
 
