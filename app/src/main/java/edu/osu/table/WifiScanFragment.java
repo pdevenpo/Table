@@ -180,6 +180,13 @@ public class WifiScanFragment extends Fragment {
                     doWifiScan();
                 }
                 return true;
+            case R.id.action_back:
+                // User chose the "Back" item, return to main activity...
+
+                Intent intent = new Intent(WifiScanFragment.this.getActivity(), MainActivity.class);
+                startActivity(intent);
+                return true;
+
         }
         return false;
     }

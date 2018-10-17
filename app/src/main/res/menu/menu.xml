@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--DEPRECEATED/NOT USED DOCUMENT AS OF 10/16/2018
+<!--
 XML Document Provided by Professor Adam Champion of The Ohio State University for use in
 Professor Dong Xuan's Mobile Handset System class with permission from Professor Champion.
 Other Documents provided by him are prefaced with this descriptor at the top of the file -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_back"
+        android:icon="@drawable/ic_arrow_back_black_24dp"
+        android:title="@string/action_back"
+        app:showAsAction="ifRoom"
+        />
     <item
         android:title="@string/scan_text"
         android:id="@+id/menu_scan"

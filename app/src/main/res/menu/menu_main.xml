@@ -14,8 +14,10 @@
         android:title="@string/action_menu"
         app:showAsAction="ifRoom"
         />
+    <!--
     <item
         android:title="@string/scan_text"
         android:id="@+id/menu_scan"
         app:showAsAction="always|withText"/>
+        -->
 </menu>
