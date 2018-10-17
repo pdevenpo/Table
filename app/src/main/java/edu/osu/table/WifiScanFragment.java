@@ -257,14 +257,22 @@ public class WifiScanFragment extends Fragment {
 
         public void bind(ScanResult scanResult) {
             mScanResult = scanResult;
-            String resultTextStr = "WIFI NAME: " + mScanResult.SSID + "; " + '\n' + "SECURITY: " +
-                    mScanResult.capabilities + "; " + '\n' + "FREQUENCY: " + mScanResult.frequency + " MHz;" + '\n' +
+            String resultTextStr = "WIFI NAME: " + mScanResult.SSID + "; " + '\n' +
+                    "BSSID: " + mScanResult.BSSID + "; " + '\n' +
+                    "SECURITY: " + mScanResult.capabilities + "; " + '\n' +
+                    "FREQUENCY: " + mScanResult.frequency + " MHz;" + '\n' +
                     "NOISE: " + mScanResult.level + " dBm";
-            mScanResultTextView.setText(resultTextStr);
-            //original code text results
-//            String resultTextStr = "Wifi Name: " + mScanResult.SSID + "; " + mScanResult.BSSID + "; " +
-//                    mScanResult.capabilities + "; " + mScanResult.frequency + " MHz;" +
-//                    mScanResult.level + " dBm";
+            //TODO create data structure to hold all results/database
+            //TODO Limit search results based on noise or frequency
+            //TODO connect to wifi based on SSID
+
+            if(mScanResult.capabilities.contains("WPA")) {
+                    mScanResultTextView.setTextColor(getResources().getColor(R.color.darkPrimaryColor));
+                    mScanResultTextView.setText(resultTextStr);
+            }else{
+                mScanResultTextView.setText(resultTextStr);
+            }
+
         }
     }
 
