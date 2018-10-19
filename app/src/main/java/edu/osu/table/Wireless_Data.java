@@ -14,11 +14,38 @@ public class Wireless_Data {
 
     private String SSID;
     private String MAC_Address;
+    private String Security;
     private int RSS_dBm;
     private int chan_freq;
     private int throughput_Mbps;
     private int battery_percentage;
+    private boolean battery_charging;
+    private int channel_bw;
     private int time;
+
+    public boolean isBattery_charging() {
+        return battery_charging;
+    }
+
+    public void setBattery_charging(boolean battery_charging) {
+        this.battery_charging = battery_charging;
+    }
+
+    public String getSecurity() {
+        return Security;
+    }
+
+    public void setSecurity(String security) {
+        Security = security;
+    }
+
+    public int getChannel_bw() {
+        return channel_bw;
+    }
+
+    public void setChannel_bw(int channel_bw) {
+        this.channel_bw = channel_bw;
+    }
 
     public int getTime() {
         return time;
