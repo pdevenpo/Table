@@ -1,5 +1,6 @@
 package edu.osu.table
 
+import android.app.ProgressDialog.show
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -12,12 +13,37 @@ import android.view.MenuItem
 import android.view.View
 import edu.osu.table.ui.recommendation.RecommendationFragment
 import kotlinx.android.synthetic.main.recommendation_fragment.*
+import android.arch.persistence.room.Room
+import android.os.Handler
+import android.widget.TextView
+import android.widget.Toast
+import java.util.*
+
 
 class RecommendationActivity : AppCompatActivity() {
+
+    private var mDb: WirelessDatabase? = null
+
+    private lateinit var mBatteryPercent: TextView
+    private lateinit var mTime: TextView
+
+    private lateinit var mDbWorkerThread: DbWorkerThread
+
+    private val mUiHandler = Handler()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.recommendation_activity)
+
+        mDbWorkerThread = DbWorkerThread("dbWorkerThread")
+        mDbWorkerThread.start()
+
+        mBatteryPercent = findViewById(R.id.batt_perc)
+        mTime = findViewById(R.id.time_id)
+
+        mDb = WirelessDatabase.getInstance(this)
+
         // Note that the Toolbar defined in the layout has the id "my_toolbar"
         setSupportActionBar(findViewById(R.id.my_toolbar))
         //display fragment instead of container
@@ -29,6 +55,21 @@ class RecommendationActivity : AppCompatActivity() {
 
         val intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         this.registerReceiver(myBroadcastReceiver,intentFilter)
+
+
+        //Thread.sleep(1000)
+        var wirelessData = WirelessData()
+        wirelessData.BatteryPerc = 97.0 //BatteryManager.EXTRA_LEVEL.toDouble()
+        insertWirelessDataInDb(wirelessData = wirelessData)
+        //Thread.sleep(1000)
+        //wirelessData.BatteryPerc = BatteryManager.EXTRA_LEVEL.toDouble()
+        //insertWirelessDataInDb(wirelessData = wirelessData)
+        //Thread.sleep(1000)
+        //wirelessData.BatteryPerc = BatteryManager.EXTRA_LEVEL.toDouble()
+        //insertWirelessDataInDb(wirelessData = wirelessData)
+
+        //Thread.sleep(1000)
+
     }
 
     // Mike's Modifications
@@ -80,6 +121,19 @@ class RecommendationActivity : AppCompatActivity() {
             val voltage = intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0).toDouble() / 1000
             stringBuilder.append("\nVoltage:\n$voltage V\n")
             message_recommend.text = stringBuilder
+
+            var wirelessData = WirelessData()
+            wirelessData.BatteryPerc = batteryPercentage.toDouble()
+            //Date currentTime = Calendar.getInstance().getTime()
+            wirelessData.CurDate = System.currentTimeMillis()
+
+
+            insertWirelessDataInDb(wirelessData = wirelessData)
+            //Thread.sleep(1000)
+
+            fetchWirelessDataFromDb()
+
+
         }
     }
 
@@ -116,4 +170,39 @@ class RecommendationActivity : AppCompatActivity() {
         }
     }
 
+    private fun bindDataWithUi(wirelessData: WirelessData?){
+        mBatteryPercent.text = wirelessData?.BatteryPerc.toString()
+        mTime.text = wirelessData?.CurDate.toString()
+    }
+
+    private fun fetchWirelessDataFromDb() {
+        val task = Runnable {
+            val wirelessData =
+                    mDb?.wirelessDataDao()?.getAll()
+            mUiHandler.post({
+                if (wirelessData == null || wirelessData?.size == 0) {
+                    //showToast("No data in cache..!!", Toast.LENGTH_SHORT)
+                } else {
+                    bindDataWithUi(wirelessData = wirelessData?.get(1))
+                }
+            })
+        }
+        mDbWorkerThread.postTask(task)
+    }
+
+    private fun insertWirelessDataInDb(wirelessData: WirelessData) {
+        val task = Runnable { mDb?.wirelessDataDao()?.insert(wirelessData) }
+        mDbWorkerThread.postTask(task)
+    }
+
+    /*private fun readWirelessDataInDb() {
+        val task = Runnable { mDb?.wirelessDataDao()?.getAll() }
+        mDbWorkerThread.postTask(task)
+    }*/
+
+    /*override fun onDestroy() {
+        WirelessDatabase.destroyInstance()
+        mDbWorkerThread.quit()
+        super.onDestroy()
+    }*/
 }

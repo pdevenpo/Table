@@ -4,6 +4,9 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+// Mike Added
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -16,6 +19,7 @@ android {
 
         // Mike's addition for Room Database
         javaCompileOptions {
+
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
@@ -51,6 +55,7 @@ dependencies {
     // Mike's additions for "Room"
     def room_version = "1.1.1"
     implementation "android.arch.persistence.room:runtime:$room_version"
+    kapt "android.arch.persistence.room:compiler:$room_version"
     annotationProcessor "android.arch.persistence.room:compiler:$room_version" // use kapt for Kotlin
     // optional - RxJava support for Room
     implementation "android.arch.persistence.room:rxjava2:$room_version"

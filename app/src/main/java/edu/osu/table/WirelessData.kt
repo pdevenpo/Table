@@ -7,7 +7,7 @@ import java.util.*
 
 @Entity(tableName = "wirelessData")
 data class WirelessData(@PrimaryKey(autoGenerate = true) var id: Long?,
-                       @ColumnInfo(name = "date") var CurDate: Date,
+                       @ColumnInfo(name = "date") var CurDate: Long,
                        @ColumnInfo(name = "ssid") var SSID: String,
                        @ColumnInfo(name = "mac_address") var MAC_Address: String,
                        @ColumnInfo(name = "security") var Security: String,
@@ -20,7 +20,7 @@ data class WirelessData(@PrimaryKey(autoGenerate = true) var id: Long?,
 
 
 ){
-    constructor():this(null, Date(0),  "",   "",   "",
+    constructor():this(null,0,  "",   "",   "",
             -1000,   0.0,   -1.0, 0.0, -1.0)
 
 }
