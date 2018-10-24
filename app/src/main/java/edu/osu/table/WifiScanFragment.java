@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -122,7 +123,25 @@ public class WifiScanFragment extends Fragment {
                                             //TODO force a wifi connection based on BSSID
                                            @Override
                                            public void onClick(View view) {
-
+                                               WifiConfiguration config = new WifiConfiguration();
+                                               config.allowedAuthAlgorithms.clear();
+                                               config.allowedGroupCiphers.clear();
+                                               config.allowedKeyManagement.clear();
+                                               config.allowedPairwiseCiphers.clear();
+                                               config.allowedProtocols.clear();
+                                               config.SSID = "\"" + "WiFi@OSU" + "\"";
+                                               config.BSSID = "6c:f3:7f:52:4e:a1"; // <--BSSID should be set without ->"<-
+                                               List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();
+                                               for (WifiConfiguration existingConfig : existingConfigs)
+                                               {
+                                                   if (null != existingConfig && existingConfig.SSID.toString().equals("\"" + "osuwireless" + "\""))
+                                                   {
+                                                       mWifiManager.removeNetwork(existingConfig.networkId);
+                                                   }
+                                               }
+                                               config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                                               int wcgID = mWifiManager.addNetwork(config);
+                                               boolean b =  mWifiManager.enableNetwork(wcgID, true);
                                            }
                                        });
         //Initialize the action bar
@@ -144,7 +163,7 @@ public class WifiScanFragment extends Fragment {
         return v;
     }
 
-    
+
     @Override
     public void onResume() {
         super.onResume();
