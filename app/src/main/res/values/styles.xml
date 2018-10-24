@@ -12,7 +12,7 @@
         <item name="buttonStyle">
             @style/Widget.AppCompat.Button.Borderless.Colored
         </item>
-        <item name="colorAccent">#FFAB40</item>
+        <item name="colorAccent">#9f1326</item>
     </style>
 
 </resources>

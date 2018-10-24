@@ -2,20 +2,36 @@
 <!-- XML Document Provided by Professor Adam Champion of The Ohio State University for use in
 Professor Dong Xuan's Mobile Handset System class with permission from Professor Champion.
 Other Documents provided by him are prefaced with this descriptor at the top of the file -->
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.osu.table.WifiScanActivity"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:orientation="vertical"
+    tools:context="edu.osu.table.WifiScanActivity">
+
+    <LinearLayout
+        android:layout_marginTop="70dp"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/connect_wifi"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="0dp"
+            android:layout_weight="1"
+            android:text="Fix my WiFi" />
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/scan_result_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="60dp"/>
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp" />
 
 </LinearLayout>

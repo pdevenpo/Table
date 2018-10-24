@@ -27,8 +27,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.*;
 import android.support.v7.widget.Toolbar;
 
 import org.w3c.dom.Text;
@@ -111,26 +113,38 @@ public class WifiScanFragment extends Fragment {
      */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //Inflate the appropriate view for ui
         View v = inflater.inflate(R.layout.fragment_wifi_scan, container, false);
+        //Initialize buttons
+        Button wifi_button = (Button) v.findViewById(R.id.connect_wifi);
+        //onclick listener for wifi_button to connect to a new wifi
+        wifi_button.setOnClickListener(new View.OnClickListener() {
+                                            //TODO force a wifi connection based on BSSID
+                                           @Override
+                                           public void onClick(View view) {
 
-
+                                           }
+                                       });
+        //Initialize the action bar
         setHasOptionsMenu(true);
+        //Initialize the recycler view
         mScanResultRecyclerView = (RecyclerView) v.findViewById(R.id.scan_result_recyclerview);
         mScanResultAdapter = new ScanResultAdapter(mScanResultList);
         mScanResultRecyclerView.setAdapter(mScanResultAdapter);
         mScanResultRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        //Call the setupwifi method to
         setupWifi();
         mIntentFilter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
 
         setHasOptionsMenu(true);
         setRetainInstance(true);
-        //added to start on initial load
-        //TODO Increase speed of this load
+        //Call the wifiscan on activity load to avoid button press
         doWifiScan();
         return v;
     }
 
+    
     @Override
     public void onResume() {
         super.onResume();

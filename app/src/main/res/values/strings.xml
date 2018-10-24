@@ -22,5 +22,8 @@
     <string name="suppress_dialog_key">suppress_notice_dialog</string>
     <string name="read_location_permission_denied">User denied request for location permission</string>
 
+    <!-- Connect to specific wifi Strings-->
+    <string name = "connect_to_wifi">Fix my WiFi</string>
+
 
 </resources>
