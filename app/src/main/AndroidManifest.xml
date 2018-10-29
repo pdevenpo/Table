@@ -28,6 +28,8 @@
         <activity android:name=".RecommendationActivity" />
         <activity android:name=".Graph" />
         <activity android:name=".Settings"></activity>
+        <service android:name=".MyBatteryIntentService"
+                 android:exported="false"></service>
     </application>
 
 </manifest>
