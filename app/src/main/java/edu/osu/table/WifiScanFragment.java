@@ -2,6 +2,8 @@ package edu.osu.table;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.arch.persistence.room.Database;
+import android.arch.persistence.room.Room;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -59,14 +61,19 @@ public class WifiScanFragment extends Fragment {
      */
     private WifiManager mWifiManager;
     private IntentFilter mIntentFilter;
-
     private RecyclerView mScanResultRecyclerView;
     private ScanResultAdapter mScanResultAdapter;
-
     private List<ScanResult> mScanResultList = new ArrayList<>();
-
     private static final int PERMISSION_REQUEST_LOCATION = 1;
     private final String TAG = getClass().getSimpleName();
+    //Create necessary variables for database insertion
+    private String wifiSSID;
+    private String wifiMacAddress;
+    private String wifiSecurity;
+    private int wifiRssDbm;
+    private double wifiChanFreq;
+    private long wifiID;
+
 
     /*
      * ************************************************************************
@@ -290,14 +297,36 @@ public class WifiScanFragment extends Fragment {
 
         public void bind(ScanResult scanResult) {
             mScanResult = scanResult;
+
+            //Instantiate the Database
+            WirelessDatabase database = Room.databaseBuilder(getActivity().getApplicationContext(), WirelessDatabase.class, "db-wifi.db")
+                    .allowMainThreadQueries()   //Allows room to do operation on main thread
+                    .build();
+            WirelessDao wirelessDao = database.wirelessDataDao();
+            WirelessData wirelessData = new WirelessData();
+            //set wirelessdata to all the wifi information
+            wifiChanFreq = mScanResult.frequency;
+            wifiMacAddress = mScanResult.BSSID;
+            wifiRssDbm = mScanResult.level;
+            wifiSecurity = mScanResult.capabilities;
+            wifiSSID = mScanResult.SSID;
+            wifiID = 5;
+            wirelessData.setSSID(wifiSSID);
+            wirelessData.setId(wifiID);
+            wirelessData.setChanFreq(wifiChanFreq);
+            wirelessData.setMAC_Address(wifiMacAddress);
+            wirelessData.setRSSdBm(wifiRssDbm);
+            wirelessData.setSecurity(wifiSecurity);
+
+            wirelessDao.insert(wirelessData);
+            //Toast tester to ensure correct information
+            //Toast.makeText(getContext(), hello , Toast.LENGTH_SHORT).show();
+
             String resultTextStr = "WIFI NAME: " + mScanResult.SSID + "; " + '\n' +
                     "BSSID: " + mScanResult.BSSID + "; " + '\n' +
                     "SECURITY: " + mScanResult.capabilities + "; " + '\n' +
                     "FREQUENCY: " + mScanResult.frequency + " MHz;" + '\n' +
                     "NOISE: " + mScanResult.level + " dBm";
-            //TODO create data structure to hold all results/database
-            //TODO Limit search results based on noise or frequency
-            //TODO connect to wifi based on SSID
 
             if(mScanResult.capabilities.contains("WPA")) {
                     mScanResultTextView.setTextColor(getResources().getColor(R.color.darkPrimaryColor));

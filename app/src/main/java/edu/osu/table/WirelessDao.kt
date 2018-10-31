@@ -17,6 +17,7 @@ interface WirelessDao {
     @Insert(onConflict = REPLACE)
     fun insert(wirelessData: WirelessData)
 
+
     @Query("DELETE from wirelessData")
     fun deleteAll()
 }
