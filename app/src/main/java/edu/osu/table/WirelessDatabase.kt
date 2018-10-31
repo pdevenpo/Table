@@ -17,7 +17,7 @@ abstract class WirelessDatabase : RoomDatabase() {
             if (INSTANCE == null) {
                 synchronized(WirelessDatabase::class) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            WirelessDatabase::class.java, "wirelessdb.db")
+                            WirelessDatabase::class.java, "wirelessdb.db").allowMainThreadQueries()
                             .build()
                 }
             }
