@@ -18,11 +18,19 @@ Other Documents provided by him are prefaced with this descriptor at the top of 
         <Button
             android:id="@+id/connect_wifi"
             style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="wrap_content"
+            android:layout_width="90dp"
             android:layout_height="match_parent"
             android:layout_marginTop="0dp"
             android:layout_weight="1"
             android:text="Fix my WiFi" />
+
+        <Button
+            android:id="@+id/connect_wifi_5G"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/connect_to_wifi5G"/>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

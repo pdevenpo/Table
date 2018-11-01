@@ -72,11 +72,11 @@ class Graph : AppCompatActivity() {
             newbattery_data = WirelessData()
             newbattery_data.BatteryPerc = percentage
             newbattery_data.MAC_Address = ""
-            newbattery_data.ChanFreq = -1.0
-            newbattery_data.SSID = ""
-            newbattery_data.ThroughputMpbs = 0.0
-            newbattery_data.Security = ""
-            newbattery_data.RSSdBm = -1
+            //newbattery_data.ChanFreq = -1.0
+            //newbattery_data.SSID = ""
+            //newbattery_data.ThroughputMpbs = 0.0
+            //newbattery_data.Security = ""
+            //newbattery_data.RSSdBm = -1
             val currtime = Calendar.getInstance().timeInMillis
             newbattery_data.CurDate = currtime
             currLevel += 0.5

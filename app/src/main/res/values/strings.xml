@@ -24,6 +24,7 @@
 
     <!-- Connect to specific wifi Strings-->
     <string name = "connect_to_wifi">Fix my WiFi</string>
+    <string name = "connect_to_wifi5G">Fix my Wifi 5G</string>
 
 
 </resources>

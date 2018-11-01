@@ -72,7 +72,12 @@ public class WifiScanFragment extends Fragment {
     private String wifiSecurity;
     private int wifiRssDbm;
     private double wifiChanFreq;
-    private long wifiID;
+    //will be incremented for every added wifi to keep different ids on the wifi
+    public long wifiID = 0;
+    //create a variable to hold the best connections dbm and name
+    public String bestSSID;
+    public int bestDBM;
+
 
 
     /*
@@ -126,7 +131,18 @@ public class WifiScanFragment extends Fragment {
         //Initialize buttons
         Button wifi_button = (Button) v.findViewById(R.id.connect_wifi);
         //onclick listener for wifi_button to connect to a new wifi
+        Button wifi_button_5G = (Button) v.findViewById(R.id.connect_wifi_5G);
+
+        wifi_button_5G.setOnClickListener(new View.OnClickListener(){
+                                        @Override
+                                        public void onClick(View view){
+
+                                        }
+                                          });
+
         wifi_button.setOnClickListener(new View.OnClickListener() {
+                                            //-54 is a better signal than -80 dbm
+                                            //2.4 or 5.5 better freq?
                                             //TODO force a wifi connection based on BSSID
                                            @Override
                                            public void onClick(View view) {
@@ -149,6 +165,7 @@ public class WifiScanFragment extends Fragment {
                                                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
                                                int wcgID = mWifiManager.addNetwork(config);
                                                boolean b =  mWifiManager.enableNetwork(wcgID, true);
+
                                            }
                                        });
         //Initialize the action bar
@@ -299,26 +316,26 @@ public class WifiScanFragment extends Fragment {
             mScanResult = scanResult;
 
             //Instantiate the Database
-            WirelessDatabase database = Room.databaseBuilder(getActivity().getApplicationContext(), WirelessDatabase.class, "db-wifi.db")
+            ScanDatabase database = Room.databaseBuilder(getActivity().getApplicationContext(), ScanDatabase.class, "db-wifi.db")
                     .allowMainThreadQueries()   //Allows room to do operation on main thread
                     .build();
-            WirelessDao wirelessDao = database.wirelessDataDao();
-            WirelessData wirelessData = new WirelessData();
+            ScanDao scanDao = database.scanDataDao();
+            ScanData scanData = new ScanData();
             //set wirelessdata to all the wifi information
             wifiChanFreq = mScanResult.frequency;
             wifiMacAddress = mScanResult.BSSID;
             wifiRssDbm = mScanResult.level;
             wifiSecurity = mScanResult.capabilities;
             wifiSSID = mScanResult.SSID;
-            wifiID = 5;
-            wirelessData.setSSID(wifiSSID);
-            wirelessData.setId(wifiID);
-            wirelessData.setChanFreq(wifiChanFreq);
-            wirelessData.setMAC_Address(wifiMacAddress);
-            wirelessData.setRSSdBm(wifiRssDbm);
-            wirelessData.setSecurity(wifiSecurity);
 
-            wirelessDao.insert(wirelessData);
+            //wirelessData.setSSID(wifiSSID);
+            scanData.setId(wifiID);
+            //wirelessData.setChanFreq(wifiChanFreq);
+            scanData.setMAC_Address(wifiMacAddress);
+            //wirelessData.setRSSdBm(wifiRssDbm);
+            //.setSecurity(wifiSecurity);
+
+            scanDao.insert(scanData);
             //Toast tester to ensure correct information
             //Toast.makeText(getContext(), hello , Toast.LENGTH_SHORT).show();
 
@@ -327,7 +344,7 @@ public class WifiScanFragment extends Fragment {
                     "SECURITY: " + mScanResult.capabilities + "; " + '\n' +
                     "FREQUENCY: " + mScanResult.frequency + " MHz;" + '\n' +
                     "NOISE: " + mScanResult.level + " dBm";
-
+            wifiID++;
             if(mScanResult.capabilities.contains("WPA")) {
                     mScanResultTextView.setTextColor(getResources().getColor(R.color.darkPrimaryColor));
                     mScanResultTextView.setText(resultTextStr);

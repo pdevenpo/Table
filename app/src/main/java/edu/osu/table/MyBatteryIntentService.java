@@ -75,11 +75,11 @@ public class MyBatteryIntentService extends IntentService {
         newbattery_data = new WirelessData();
         newbattery_data.setBatteryPerc(percentage);
         newbattery_data.setMAC_Address("");
-        newbattery_data.setChanFreq(-1.0);
-        newbattery_data.setChBW(0);
-        newbattery_data.setSSID("");
-        newbattery_data.setThroughputMpbs(0.0);
-        newbattery_data.setRSSdBm(0);
+        //newbattery_data.setChanFreq(-1.0);
+        //newbattery_data.setChBW(0);
+        //newbattery_data.setSSID("");
+        //newbattery_data.setThroughputMpbs(0.0);
+        //newbattery_data.setRSSdBm(0);
         long currtime = Calendar.getInstance().getTimeInMillis();
         newbattery_data.setCurDate(currtime);
         wireless_Database.wirelessDataDao().insert(newbattery_data);
