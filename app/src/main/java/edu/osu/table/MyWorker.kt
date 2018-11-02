@@ -4,10 +4,13 @@ import android.app.PendingIntent.getActivity
 import android.arch.persistence.room.Room
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.wifi.WifiManager
 import android.os.AsyncTask
+import android.os.BatteryManager
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -111,7 +114,7 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
                 speed_public = speed
             }
             */
-            InternetSpeedTest().execute("http://www.daycomsolutions.com/Support/BatchImage/HPIM0050w800.JPG")
+            //InternetSpeedTest().execute("http://www.daycomsolutions.com/Support/BatchImage/HPIM0050w800.JPG")
             // Write to Database Throughput
             val wifiManager = getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
             val info = wifiManager.connectionInfo
@@ -126,9 +129,21 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
             wirelessData.CurDate = System.currentTimeMillis()
             wirelessData.MAC_Address = bssid
             wirelessData.RSSdBm = rss
-            wirelessData.BatteryPerc = 10.0
+
+            // Get Battery Percentage
+            val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
+                this.applicationContext.registerReceiver(null, ifilter)
+            }
+            val batteryPct: Float? = batteryStatus?.let { intent ->
+                val level: Int = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+                val scale: Int = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+                level / scale.toFloat()
+            }
+
+            wirelessData.BatteryPerc = batteryPct!!.toDouble()
             // This is not catching the correct value... may have to insert wait statement
-            wirelessData.ThroughputMpbs = speed_public
+
+            wirelessData.ThroughputMpbs = getThroughput()
 
             wirelessDao?.insert(wirelessData)
 
@@ -142,6 +157,36 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
         }
     }
 
+
+    private fun getThroughput():  Double {
+        var beginTime: Long = 0
+        var finishTime: Long = 0
+
+        beginTime = System.currentTimeMillis()
+
+        var image: Bitmap? = null
+        val url_val = URL("http://www.daycomsolutions.com/Support/BatchImage/HPIM0050w800.JPG")
+        val connection = url_val.openConnection() as HttpURLConnection
+        val `is` = connection.inputStream
+        image = BitmapFactory.decodeStream(`is`)
+        val bitmap = image
+        val stream = ByteArrayOutputStream()
+        bitmap!!.compress(Bitmap.CompressFormat.JPEG, 99, stream)
+        val imageInByte = stream.toByteArray()
+        val lengthbmp = imageInByte.size.toLong()
+
+        if (null != image) {
+            finishTime = System.currentTimeMillis()
+        }
+
+        val dataSize = (lengthbmp / 1024).toLong()
+        val deltaTime = finishTime - beginTime
+        val s = deltaTime.toDouble() / 1000
+        val speed = dataSize / s
+        Log.d(ContentValues.TAG, "onPostExecute: " + "" + DecimalFormat("##.##").format(speed) + "kb/second")
+        return speed
+
+    }
     /* InterenetSpeed Test was modified from : https://stackoverflow.com/questions/19258254/how-to-correctly-measure-download-speed-with-java-android */
 
     // This downloads a JPG image, and it calculates how long it took to do so for the throughput.
