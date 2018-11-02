@@ -75,8 +75,9 @@ public class WifiScanFragment extends Fragment {
     //will be incremented for every added wifi to keep different ids on the wifi
     public long wifiID = 0;
     //create a variable to hold the best connections dbm and name
-    public String bestSSID;
-    public int bestDBM;
+    public String bestBSSID = "";
+    public int bestDBM = -80;
+    public String bestSSID = "";
 
 
 
@@ -132,14 +133,6 @@ public class WifiScanFragment extends Fragment {
         Button wifi_button = (Button) v.findViewById(R.id.connect_wifi);
         //onclick listener for wifi_button to connect to a new wifi
         Button wifi_button_5G = (Button) v.findViewById(R.id.connect_wifi_5G);
-
-        wifi_button_5G.setOnClickListener(new View.OnClickListener(){
-                                        @Override
-                                        public void onClick(View view){
-
-                                        }
-                                          });
-
         wifi_button.setOnClickListener(new View.OnClickListener() {
                                             //-54 is a better signal than -80 dbm
                                             //2.4 or 5.5 better freq?
@@ -152,8 +145,8 @@ public class WifiScanFragment extends Fragment {
                                                config.allowedKeyManagement.clear();
                                                config.allowedPairwiseCiphers.clear();
                                                config.allowedProtocols.clear();
-                                               config.SSID = "\"" + "WiFi@OSU" + "\"";
-                                               config.BSSID = "6c:f3:7f:52:4e:a1"; // <--BSSID should be set without ->"<-
+                                               config.SSID = "\"" + bestSSID + "\"";
+                                               config.BSSID = bestBSSID; // <--BSSID should be set without ->"<-
                                                List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();
                                                for (WifiConfiguration existingConfig : existingConfigs)
                                                {
@@ -316,25 +309,31 @@ public class WifiScanFragment extends Fragment {
             mScanResult = scanResult;
 
             //Instantiate the Database
-            ScanDatabase database = Room.databaseBuilder(getActivity().getApplicationContext(), ScanDatabase.class, "db-wifi.db")
+            ScanDatabase database = Room.databaseBuilder(getActivity().getApplicationContext(), ScanDatabase.class, "scandb.db")
                     .allowMainThreadQueries()   //Allows room to do operation on main thread
                     .build();
             ScanDao scanDao = database.scanDataDao();
             ScanData scanData = new ScanData();
             //set wirelessdata to all the wifi information
+            //int j = GetBatteryPercentage.getBatteryPercentage();
+            if(mScanResult.level > bestDBM){
+                bestDBM = mScanResult.level;
+                bestBSSID = mScanResult.BSSID;
+                bestSSID = mScanResult.SSID;
+            }
             wifiChanFreq = mScanResult.frequency;
             wifiMacAddress = mScanResult.BSSID;
             wifiRssDbm = mScanResult.level;
             wifiSecurity = mScanResult.capabilities;
             wifiSSID = mScanResult.SSID;
 
+
             //wirelessData.setSSID(wifiSSID);
             scanData.setId(wifiID);
             //wirelessData.setChanFreq(wifiChanFreq);
-            scanData.setMAC_Address(wifiMacAddress);
+           scanData.setMAC_Address(wifiMacAddress);
             //wirelessData.setRSSdBm(wifiRssDbm);
             //.setSecurity(wifiSecurity);
-
             scanDao.insert(scanData);
             //Toast tester to ensure correct information
             //Toast.makeText(getContext(), hello , Toast.LENGTH_SHORT).show();
