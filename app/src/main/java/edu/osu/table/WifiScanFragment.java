@@ -315,6 +315,7 @@ public class WifiScanFragment extends Fragment {
             ScanDao scanDao = database.scanDataDao();
             ScanData scanData = new ScanData();
             //set wirelessdata to all the wifi information
+            //int j = GetBatteryPercentage.getBatteryPercentage();
             if(mScanResult.level > bestDBM){
                 bestDBM = mScanResult.level;
                 bestBSSID = mScanResult.BSSID;
