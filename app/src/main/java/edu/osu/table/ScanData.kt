@@ -17,6 +17,6 @@ data class ScanData(@PrimaryKey(autoGenerate = true) var id: Long?,
 
 
 ){
-    constructor():this(null,0,  "", "",0,0.0)
+    constructor():this(0,0,  "", "",0,0.0)
 
 }

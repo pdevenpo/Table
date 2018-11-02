@@ -21,9 +21,9 @@ interface ScanDao {
     fun insert(scanData: ScanData)
 
 
-    @Query("DELETE from scanData")
-    fun deleteAll()
+//    @Query("DELETE from scanData")
+//    fun deleteAll()
 
-    @Query("SELECT * FROM scanData ORDER BY date ASC LIMIT 500")
-    abstract fun getAllBattery(): List<ScanData>
+//    @Query("SELECT * FROM scanData ORDER BY date ASC LIMIT 500")
+//    abstract fun getAllBattery(): List<ScanData>
 }
