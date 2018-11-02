@@ -127,7 +127,11 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
             wirelessData.MAC_Address = bssid
             wirelessData.RSSdBm = rss
             wirelessData.BatteryPerc = 10.0
+            // This is not catching the correct value... may have to insert wait statement
             wirelessData.ThroughputMpbs = speed_public
+
+            wirelessDao?.insert(wirelessData)
+
 
             //TODO - Add WiFi Scan Fragment - Are you happy Ben?
 
