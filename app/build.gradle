@@ -19,7 +19,6 @@ android {
 
         // Mike's addition for Room Database
         javaCompileOptions {
-
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
@@ -31,12 +30,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    productFlavors {
-    }
-    buildToolsVersion '28.0.3'
+    //productFlavors {
+    //}
+    //buildToolsVersion '28.0.3'
 }
 
 dependencies {
+    //def versions_work = "1.0.0-alpha10"
+    //implementation "android.arch.work:work-runtime-ktx:$versions_work"
+    implementation("android.arch.work:work-runtime:1.0.0-alpha10") {
+        exclude group: 'com.google.guava', module: 'listenablefuture'
+    }
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:28.0.0'

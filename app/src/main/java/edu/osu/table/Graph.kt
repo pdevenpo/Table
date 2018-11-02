@@ -27,10 +27,10 @@ class Graph : AppCompatActivity() {
         }
     }*/
 
-    private lateinit var myBatteryService: MyBatteryIntentService
-    private lateinit var newWirelessData: WirelessData
-    private var wireless_Database: WirelessDatabase? = null
-    private val TAG: String = "GraphActivity"
+    //private lateinit var myBatteryService: MyBatteryIntentService
+    //private lateinit var newWirelessData: WirelessData
+    //private var wireless_Database: WirelessDatabase? = null
+    //private val TAG: String = "GraphActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +43,7 @@ class Graph : AppCompatActivity() {
         .replace(R.id.container, RecommendationFragment.newInstance())
         .commitNow()
         }**/
+        /*
         wireless_Database = WirelessDatabase.getInstance(this)
         val graph = findViewById<View>(R.id.battery_graph) as GraphView
         val series = LineGraphSeries<DataPoint>(arrayOf<DataPoint>(DataPoint(1.0, 1.0), DataPoint(1.0, 5.0), DataPoint(2.0, 3.0), DataPoint(3.0, 2.0), DataPoint(4.0, 6.0)))
@@ -83,6 +84,7 @@ class Graph : AppCompatActivity() {
             maxLevel  +=0.1
             //MainActivity().myappdb.wirelessDao().addWireless_Data(newbattery_data)
             //wireless_Database.wirelessDao().addWireless_Data(newbattery_data)
+
         }
 
         Log.d(TAG, "Addition to the DB happened")
@@ -110,6 +112,7 @@ class Graph : AppCompatActivity() {
 //        MainActivity().myappdb.wirelessDao().addWireless_Data(newWirelessData)
 
         //stringBuilder.append()
+        */
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

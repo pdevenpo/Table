@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e231f78e36991fb143e33a87a399ba46",
+    "identityHash": "e585adfa84597297529bdb3ccd5e4b81",
     "entities": [
       {
         "tableName": "wirelessData",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `date` INTEGER NOT NULL, `mac_address` TEXT NOT NULL, `battery_percentage` REAL NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `date` INTEGER NOT NULL, `mac_address` TEXT NOT NULL, `rss_dbm` INTEGER NOT NULL, `thoughput_Mbps` REAL NOT NULL, `battery_percentage` REAL NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -24,6 +24,18 @@
             "fieldPath": "MAC_Address",
             "columnName": "mac_address",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "RSSdBm",
+            "columnName": "rss_dbm",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ThroughputMpbs",
+            "columnName": "thoughput_Mbps",
+            "affinity": "REAL",
             "notNull": true
           },
           {
@@ -45,7 +57,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e231f78e36991fb143e33a87a399ba46\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e585adfa84597297529bdb3ccd5e4b81\")"
     ]
   }
 }
