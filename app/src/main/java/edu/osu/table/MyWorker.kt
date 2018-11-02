@@ -1,5 +1,7 @@
 package edu.osu.table
 
+import android.app.PendingIntent.getActivity
+import android.arch.persistence.room.Room
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
@@ -13,6 +15,7 @@ import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.DecimalFormat
+import java.util.*
 
 /*
 import android.content.ContentValues
@@ -39,7 +42,11 @@ import java.text.DecimalFormat
 
 class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
 
+    private var mDb_wireless: WirelessDatabase? = null
+    private var mDb_scan: ScanDatabase? = null
+
     var speed_public = -1.0
+
 
     override fun doWork(): Result {
         //val appContext = applicationContext
@@ -55,6 +62,20 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
 
         return try {
             // Do Some Stuff Here
+            //Instantiate the Database
+            /*
+            val database =
+                Room.databaseBuilder(getActivity()!!.getApplicationContext(), ScanDatabase::class.java, "db-wifi.db")
+                    .allowMainThreadQueries()   //Allows room to do operation on main thread
+                    .build()
+            */
+            mDb_wireless = WirelessDatabase.getInstance(this.applicationContext)
+            mDb_scan = ScanDatabase.getInstance(this.applicationContext)
+
+            val wirelessDao = mDb_wireless?.wirelessDataDao()
+            val scanDao = mDb_scan?.scanDataDao()
+
+
             Log.d(ContentValues.TAG, "We Made It")
 
             /*
@@ -100,6 +121,15 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
             //val macaddress = info.macAddress
             val rss = info.rssi
 
+            var wirelessData = WirelessData()
+
+            wirelessData.CurDate = System.currentTimeMillis()
+            wirelessData.MAC_Address = bssid
+            wirelessData.RSSdBm = rss
+            wirelessData.BatteryPerc = 10.0
+            wirelessData.ThroughputMpbs = speed_public
+
+            //TODO - Add WiFi Scan Fragment - Are you happy Ben?
 
             Result.SUCCESS
         } catch (throwable: Throwable) {
