@@ -22,27 +22,27 @@ import java.util.*
 
 class RecommendationActivity : AppCompatActivity() {
 
-    private var mDb: WirelessDatabase? = null
+    //private var mDb: WirelessDatabase? = null
 
     private lateinit var mBatteryPercent: TextView
     private lateinit var mTime: TextView
 
-    private lateinit var mDbWorkerThread: DbWorkerThread
+    //private lateinit var mDbWorkerThread: DbWorkerThread
 
-    private val mUiHandler = Handler()
+    //private val mUiHandler = Handler()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.recommendation_activity)
 
-        mDbWorkerThread = DbWorkerThread("dbWorkerThread")
-        mDbWorkerThread.start()
+        //mDbWorkerThread = DbWorkerThread("dbWorkerThread")
+        //mDbWorkerThread.start()
 
         mBatteryPercent = findViewById(R.id.batt_perc)
         mTime = findViewById(R.id.time_id)
 
-        mDb = WirelessDatabase.getInstance(this)
+        //mDb = WirelessDatabase.getInstance(this)
 
         // Note that the Toolbar defined in the layout has the id "my_toolbar"
         setSupportActionBar(findViewById(R.id.my_toolbar))
@@ -53,14 +53,14 @@ class RecommendationActivity : AppCompatActivity() {
                     .commitNow()
         }**/
 
-        val intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-        this.registerReceiver(myBroadcastReceiver,intentFilter)
+        //val intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+        //this.registerReceiver(myBroadcastReceiver,intentFilter)
 
 
         //Thread.sleep(1000)
-        var wirelessData = WirelessData()
-        wirelessData.BatteryPerc = 97.0 //BatteryManager.EXTRA_LEVEL.toDouble()
-        insertWirelessDataInDb(wirelessData = wirelessData)
+        //var wirelessData = WirelessData()
+        //wirelessData.BatteryPerc = 97.0 //BatteryManager.EXTRA_LEVEL.toDouble()
+        //insertWirelessDataInDb(wirelessData = wirelessData)
         //Thread.sleep(1000)
         //wirelessData.BatteryPerc = BatteryManager.EXTRA_LEVEL.toDouble()
         //insertWirelessDataInDb(wirelessData = wirelessData)
@@ -73,6 +73,7 @@ class RecommendationActivity : AppCompatActivity() {
     }
 
     // Mike's Modifications
+    /*
     private val myBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val stringBuilder = StringBuilder()
@@ -135,7 +136,7 @@ class RecommendationActivity : AppCompatActivity() {
 
 
         }
-    }
+    }*/
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -169,7 +170,7 @@ class RecommendationActivity : AppCompatActivity() {
             super.onOptionsItemSelected(item)
         }
     }
-
+/*
     private fun bindDataWithUi(wirelessData: WirelessData?){
         mBatteryPercent.text = wirelessData?.BatteryPerc.toString()
         mTime.text = wirelessData?.CurDate.toString()
@@ -187,12 +188,12 @@ class RecommendationActivity : AppCompatActivity() {
                 }
             })
         }
-        mDbWorkerThread.postTask(task)
+        //mDbWorkerThread.postTask(task)
     }
 
     private fun insertWirelessDataInDb(wirelessData: WirelessData) {
         val task = Runnable { mDb?.wirelessDataDao()?.insert(wirelessData) }
-        mDbWorkerThread.postTask(task)
+        //mDbWorkerThread.postTask(task)
     }
 
     /*private fun readWirelessDataInDb() {
@@ -205,4 +206,5 @@ class RecommendationActivity : AppCompatActivity() {
         mDbWorkerThread.quit()
         super.onDestroy()
     }*/
+    */
 }

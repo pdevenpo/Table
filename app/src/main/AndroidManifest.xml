@@ -3,6 +3,7 @@
     package="edu.osu.table">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
@@ -10,6 +11,7 @@
 
 
     <application
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@mipmap/table"
         android:label="@string/app_name"
@@ -28,8 +30,8 @@
         <activity android:name=".RecommendationActivity" />
         <activity android:name=".Graph" />
         <activity android:name=".Settings"></activity>
-        <service android:name=".MyBatteryIntentService"
-                 android:exported="false"></service>
+        <!--<service android:name=".MyBatteryIntentService"
+                 android:exported="false"></service> -->
     </application>
 
 </manifest>
