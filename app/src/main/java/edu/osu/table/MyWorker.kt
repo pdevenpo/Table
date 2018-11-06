@@ -141,12 +141,10 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
             }
 
             wirelessData.BatteryPerc = batteryPct!!.toDouble()
-            // This is not catching the correct value... may have to insert wait statement
 
             wirelessData.ThroughputMpbs = getThroughput()
 
             wirelessDao?.insert(wirelessData)
-
 
             //TODO - Add WiFi Scan Fragment - Are you happy Ben?
 

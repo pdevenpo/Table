@@ -13,12 +13,13 @@ import android.util.Log
 import androidx.work.*
 
 
+
 class MainActivity : AppCompatActivity() {
 
     //private lateinit var mp: MediaPlayer
     val recurringWork: PeriodicWorkRequest = PeriodicWorkRequest.Builder(MyWorker::class.java, 15, TimeUnit.MINUTES)
-            .addTag("periodic_work").build()
-    var taco = 15237378237;
+            .addTag("periodic_work_tag").build()
+    var taco = 15237378237; // This is Ben's addition to the Main Activity - DO NOT REMOVE - It is key to the operation
     //val recurringWork: PeriodicWorkRequest = PeriodicWorkRequest.Builder(taco)
     //        .addTag("periodic_work").build()
 
@@ -37,11 +38,12 @@ class MainActivity : AppCompatActivity() {
         //mp = MediaPlayer.create(this, R.raw.desperate_man)
         //mp.start()
 
-        WorkManager.getInstance().cancelAllWorkByTag("periodic_work")
-        WorkManager.getInstance().cancelAllWork()
-        WorkManager.getInstance().enqueueUniquePeriodicWork("periodic_work", ExistingPeriodicWorkPolicy.REPLACE, recurringWork)
+        //WorkManager.getInstance().cancelAllWorkByTag("periodic_work")
+        //WorkManager.getInstance().cancelAllWork()
+        WorkManager.getInstance().enqueueUniquePeriodicWork("periodic_work", ExistingPeriodicWorkPolicy.KEEP, recurringWork)
+        //WorkManager.getInstance().beginUniqueWork("periodic_work", ExistingWorkPolicy.KEEP, recurringWork)
         //val workManager: WorkManager = WorkManager.getInstance()
-
+        val somehtingjhakjsdh = 10.0
 
     }
 
