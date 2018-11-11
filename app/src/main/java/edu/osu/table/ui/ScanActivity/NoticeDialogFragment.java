@@ -1,4 +1,4 @@
-package edu.osu.table;
+package edu.osu.table.ui.ScanActivity;
 
 
 import android.app.Dialog;
@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import edu.osu.table.R;
 
 /**
  * Document Provided by Professor Adam Champion of The Ohio State University for use in

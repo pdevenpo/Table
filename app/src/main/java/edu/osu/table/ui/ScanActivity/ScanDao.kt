@@ -1,4 +1,4 @@
-package edu.osu.table
+package edu.osu.table.ui.ScanActivity
 
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
@@ -6,10 +6,10 @@ import android.arch.persistence.room.OnConflictStrategy.REPLACE
 import android.arch.persistence.room.Query
 
 @Dao
-interface WirelessDao {
+interface ScanDao {
 
-    @Query("SELECT * from wirelessData")
-    fun getAll(): List<WirelessData>
+    @Query("SELECT * from scanData")
+    fun getAll(): List<ScanData>
 
     /*@Query("SELECT * from wirelessData WHERE rss_dbm > :rss_dbm")
     fun getRssGreaterThan(rss_dbm: Double): List<WirelessData>
@@ -18,12 +18,12 @@ interface WirelessDao {
     fun getRssSort(): List<WirelessData>*/
 
     @Insert(onConflict = REPLACE)
-    fun insert(wirelessData: WirelessData)
+    fun insert(scanData: ScanData)
 
 
-    @Query("DELETE from wirelessData")
-    fun deleteAll()
+//    @Query("DELETE from scanData")
+//    fun deleteAll()
 
-    @Query("SELECT * FROM wirelessData ORDER BY date ASC LIMIT 500")
-    abstract fun getAllBattery(): List<WirelessData>
+//    @Query("SELECT * FROM scanData ORDER BY date ASC LIMIT 500")
+//    abstract fun getAllBattery(): List<ScanData>
 }

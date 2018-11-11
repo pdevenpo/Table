@@ -1,23 +1,13 @@
-package edu.osu.table
+package edu.osu.table.ui.RecommendationsActivity
 
-import android.app.ProgressDialog.show
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.os.BatteryManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import edu.osu.table.ui.recommendation.RecommendationFragment
-import kotlinx.android.synthetic.main.recommendation_fragment.*
-import android.arch.persistence.room.Room
-import android.os.Handler
 import android.widget.TextView
-import android.widget.Toast
-import java.util.*
+import edu.osu.table.MainActivity
+import edu.osu.table.R
 
 
 class RecommendationActivity : AppCompatActivity() {

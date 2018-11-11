@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RecommendationActivity">
+    tools:context=".ui.RecommendationsActivity.RecommendationActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -24,7 +24,7 @@
 
         <fragment
             android:id="@+id/recommendation"
-            android:name="edu.osu.table.ui.recommendation.RecommendationFragment"
+            android:name="edu.osu.table.ui.RecommendationsActivity.RecommendationFragment"
             android:layout_width="254dp"
             android:layout_height="249dp"
             android:layout_alignParentStart="true"

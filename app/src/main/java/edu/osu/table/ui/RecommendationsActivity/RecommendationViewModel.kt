@@ -1,4 +1,4 @@
-package edu.osu.table.ui.recommendation
+package edu.osu.table.ui.RecommendationsActivity
 
 import android.arch.lifecycle.ViewModel
 

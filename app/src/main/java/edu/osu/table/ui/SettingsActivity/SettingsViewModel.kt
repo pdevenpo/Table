@@ -1,4 +1,4 @@
-package edu.osu.table.ui.settings
+package edu.osu.table.ui.SettingsActivity
 
 import android.arch.lifecycle.ViewModel
 

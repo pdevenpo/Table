@@ -1,4 +1,4 @@
-package edu.osu.table
+package edu.osu.table.ui.WirelessData
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity

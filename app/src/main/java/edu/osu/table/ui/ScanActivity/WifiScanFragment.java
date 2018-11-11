@@ -1,8 +1,6 @@
-package edu.osu.table;
+package edu.osu.table.ui.ScanActivity;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -33,10 +31,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.*;
-import android.support.v7.widget.Toolbar;
 
-import org.w3c.dom.Text;
+import edu.osu.table.MainActivity;
+import edu.osu.table.R;
 
 import java.util.ArrayList;
 import java.util.List;

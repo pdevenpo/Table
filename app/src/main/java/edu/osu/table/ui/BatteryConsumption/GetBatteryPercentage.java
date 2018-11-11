@@ -1,4 +1,4 @@
-package edu.osu.table;
+package edu.osu.table.ui.BatteryConsumption;
 
 import android.content.Context;
 import android.content.Intent;

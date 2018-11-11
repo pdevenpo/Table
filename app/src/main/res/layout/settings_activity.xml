@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Settings">
+    tools:context=".ui.SettingsActivity.Settings">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -24,7 +24,7 @@
 
         <fragment
             android:id="@+id/recommendation"
-            android:name="edu.osu.table.ui.settings.SettingsFragment"
+            android:name="edu.osu.table.ui.SettingsActivity.SettingsFragment"
             android:layout_width="254dp"
             android:layout_height="249dp"
             android:layout_alignParentStart="true"

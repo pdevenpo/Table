@@ -1,4 +1,4 @@
-package edu.osu.table
+package edu.osu.table.ui.ScanActivity
 
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room

@@ -1,4 +1,4 @@
-package edu.osu.table.ui.scan
+package edu.osu.table.ui.SettingsActivity
 
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -8,22 +8,22 @@ import android.view.View
 import android.view.ViewGroup
 import edu.osu.table.R
 
-class ScanFragment : Fragment() {
+class SettingsFragment : Fragment() {
 
     companion object {
-        fun newInstance() = ScanFragment()
+        fun newInstance() = SettingsFragment()
     }
 
-    private lateinit var viewModel: ScanViewModel
+    private lateinit var viewModel: SettingsViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_wifi_scan, container, false)
+        return inflater.inflate(R.layout.settings_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ScanViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(SettingsViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

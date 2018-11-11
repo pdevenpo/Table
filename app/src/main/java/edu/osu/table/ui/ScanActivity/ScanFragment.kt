@@ -1,4 +1,4 @@
-package edu.osu.table.ui.recommendation
+package edu.osu.table.ui.ScanActivity
 
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -8,22 +8,22 @@ import android.view.View
 import android.view.ViewGroup
 import edu.osu.table.R
 
-class RecommendationFragment : Fragment() {
+class ScanFragment : Fragment() {
 
     companion object {
-        fun newInstance() = RecommendationFragment()
+        fun newInstance() = ScanFragment()
     }
 
-    private lateinit var viewModel: RecommendationViewModel
+    private lateinit var viewModel: ScanViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.recommendation_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_wifi_scan, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(RecommendationViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(ScanViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

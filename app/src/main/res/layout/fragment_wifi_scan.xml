@@ -7,7 +7,7 @@ Other Documents provided by him are prefaced with this descriptor at the top of 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="edu.osu.table.WifiScanActivity">
+    tools:context="edu.osu.table.ui.ScanActivity.WifiScanActivity">
 
     <LinearLayout
         android:layout_marginTop="70dp"

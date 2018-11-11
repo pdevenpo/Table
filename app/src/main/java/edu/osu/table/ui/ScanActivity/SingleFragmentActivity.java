@@ -1,10 +1,12 @@
-package edu.osu.table;
+package edu.osu.table.ui.ScanActivity;
 
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import edu.osu.table.R;
+
 /**
  * Document Provided by Professor Adam Champion of The Ohio State University for use in
  * Professor Dong Xuan's Mobile Handset System class with permission from Professor Champion.

@@ -1,7 +1,5 @@
 package edu.osu.table
 
-import android.app.PendingIntent.getActivity
-import android.arch.persistence.room.Room
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -14,11 +12,13 @@ import android.os.BatteryManager
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import edu.osu.table.ui.ScanActivity.ScanDatabase
+import edu.osu.table.ui.WirelessData.WirelessData
+import edu.osu.table.ui.WirelessData.WirelessDatabase
 import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.DecimalFormat
-import java.util.*
 
 /*
 import android.content.ContentValues

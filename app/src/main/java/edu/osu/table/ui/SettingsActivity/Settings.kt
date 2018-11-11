@@ -1,11 +1,12 @@
-package edu.osu.table
+package edu.osu.table.ui.SettingsActivity
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import edu.osu.table.ui.settings.SettingsFragment
+import edu.osu.table.MainActivity
+import edu.osu.table.R
 
 class Settings : AppCompatActivity() {
 

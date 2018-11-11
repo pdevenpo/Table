@@ -1,4 +1,4 @@
-package edu.osu.table.ui.scan
+package edu.osu.table.ui.ScanActivity
 
 import android.arch.lifecycle.ViewModel
 

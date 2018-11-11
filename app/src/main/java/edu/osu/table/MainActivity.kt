@@ -3,15 +3,16 @@ package edu.osu.table
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.content.Intent
-import android.media.MediaPlayer
 import android.view.View
 import com.jjoe64.graphview.series.LineGraphSeries
 import com.jjoe64.graphview.GraphView
 import com.jjoe64.graphview.series.DataPoint
 import java.util.concurrent.TimeUnit
-import android.util.Log
 import androidx.work.*
-
+import edu.osu.table.ui.ScanActivity.WifiScanActivity
+import edu.osu.table.ui.SettingsActivity.Settings
+import edu.osu.table.ui.RecommendationsActivity.RecommendationActivity
+import edu.osu.table.ui.WirelessData.WifiActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -66,8 +67,15 @@ class MainActivity : AppCompatActivity() {
         startActivity(myIntent)
     }
 
+    //Allow cardview click to view battery history
     fun onClickListenerGraph(v: View) {
         val myIntent = Intent(baseContext, Graph::class.java)
+        startActivity(myIntent)
+    }
+
+    //Allow cardview click to view wifi stats
+    fun onClickListenerWifi(v: View) {
+        val myIntent = Intent(baseContext, WifiActivity::class.java)
         startActivity(myIntent)
     }
 

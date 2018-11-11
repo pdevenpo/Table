@@ -1,37 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.osu.table">
+          package="edu.osu.table">
 
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
-        android:usesCleartextTraffic="true"
-        android:allowBackup="true"
-        android:icon="@mipmap/table"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/table"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+            android:allowBackup="true"
+            android:icon="@mipmap/table"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/table"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme"
+            android:usesCleartextTraffic="true">
         <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".WifiScanActivity" />
-
-        <activity android:name=".RecommendationActivity" />
-        <activity android:name=".Graph" />
-        <activity android:name=".Settings"></activity>
-        <!--<service android:name=".MyBatteryIntentService"
-                 android:exported="false"></service> -->
+        <activity android:name=".ui.ScanActivity.WifiScanActivity"/>
+        <activity android:name=".ui.RecommendationsActivity.RecommendationActivity"/>
+        <activity android:name=".Graph"/>
+        <activity android:name=".ui.SettingsActivity.Settings"/>
+        <!--
+            <service android:name=".MyBatteryIntentService"
+                 android:exported="false"></service>
+        -->
+        <activity android:name=".ui.WirelessData.WifiActivity">
+        </activity>
     </application>
 
 </manifest>
