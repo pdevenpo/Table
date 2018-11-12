@@ -1,5 +1,6 @@
 package edu.osu.table
 
+import android.app.PendingIntent.getActivity
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -7,10 +8,14 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import edu.osu.table.ui.graph.GraphFragment
 import com.jjoe64.graphview.series.LineGraphSeries
 import com.jjoe64.graphview.GraphView
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
 import com.jjoe64.graphview.series.DataPoint
+import edu.osu.table.ui.WirelessData.WirelessData
+import edu.osu.table.ui.WirelessData.WirelessDatabase
 import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
@@ -29,8 +34,8 @@ class Graph : AppCompatActivity() {
 
     //private lateinit var myBatteryService: MyBatteryIntentService
     //private lateinit var newWirelessData: WirelessData
-    //private var wireless_Database: WirelessDatabase? = null
-    //private val TAG: String = "GraphActivity"
+    private var wireless_Database: WirelessDatabase? = null
+    private val TAG: String = "GraphActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,9 +48,11 @@ class Graph : AppCompatActivity() {
         .replace(R.id.container, RecommendationFragment.newInstance())
         .commitNow()
         }**/
-        /*
+
         wireless_Database = WirelessDatabase.getInstance(this)
+
         val graph = findViewById<View>(R.id.battery_graph) as GraphView
+        /*
         val series = LineGraphSeries<DataPoint>(arrayOf<DataPoint>(DataPoint(1.0, 1.0), DataPoint(1.0, 5.0), DataPoint(2.0, 3.0), DataPoint(3.0, 2.0), DataPoint(4.0, 6.0)))
         //graph.addSeries(series)
         var x : Double = 0.0
@@ -85,14 +92,12 @@ class Graph : AppCompatActivity() {
             //MainActivity().myappdb.wirelessDao().addWireless_Data(newbattery_data)
             //wireless_Database.wirelessDao().addWireless_Data(newbattery_data)
 
-        }
-
-        Log.d(TAG, "Addition to the DB happened")
+        }*/
 
         val alldbdata: List<WirelessData>?
         alldbdata = wireless_Database?.wirelessDataDao()?.getAllBattery()
         var batterypnts : LineGraphSeries<DataPoint> = LineGraphSeries()
-        for (dbdata in alldbdata.orEmpty())
+        for (dbdata in alldbdata.orEmpty().asReversed())
         {
             Log.d(TAG, "time : " + dbdata.CurDate.toString() +" battery Percentage: " + dbdata.BatteryPerc.toString())
             val date = Date(dbdata.CurDate)
@@ -102,17 +107,18 @@ class Graph : AppCompatActivity() {
         Log.d(TAG, "Retrieving from the DB has happened")
         graph.removeAllSeries()
         graph.addSeries(batterypnts)
-//        graph.addSeries(batterypnts)
-//        newWirelessData.setThroughput_Mbps(1)
-//        newWirelessData.ssid = null
-//        newWirelessData.rsS_dBm = 1
-//        newWirelessData.maC_Address = null
-//        newWirelessData.chan_freq = -1
-//
-//        MainActivity().myappdb.wirelessDao().addWireless_Data(newWirelessData)
+        graph.title = "Battery Consumption"
+        //Toast.makeText(this, "Graph Activity Creted", Toast.LENGTH_LONG)
 
-        //stringBuilder.append()
-        */
+        // set date label formatter
+        graph.gridLabelRenderer.labelFormatter = DateAsXAxisLabelFormatter(this)
+        graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
+        graph.getGridLabelRenderer().setHumanRounding(false);
+
+        // set manual x bounds to have nice steps
+        //graph.getViewport().setMinX(alldbdata.orEmpty()[0].CurDate);
+        //graph.getViewport().setMaxX(d3.getTime());
+        graph.getViewport().setXAxisBoundsManual(true);
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
