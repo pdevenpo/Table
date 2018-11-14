@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
@@ -16,6 +18,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -35,6 +38,10 @@ import android.widget.Toast;
 import edu.osu.table.MainActivity;
 import edu.osu.table.R;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -94,7 +101,6 @@ public class WifiScanFragment extends Fragment {
         {
             // Get the Intent action.
             String action = intent.getAction();
-
             // If the WiFi scan results are ready, iterate through them and
             // record the WiFi APs' SSIDs, BSSIDs, WiFi capabilities, radio
             // frequency, and signal strength (in dBm).
@@ -104,7 +110,6 @@ public class WifiScanFragment extends Fragment {
                 if (mWifiManager == null) {
                     setupWifi();
                 }
-
                 List<ScanResult> scanResults = mWifiManager.getScanResults();
                 Log.d(TAG, "Wi-Fi scan results available");
                 int numResults = scanResults.size(), numTotalResults = mScanResultList.size();
@@ -124,10 +129,13 @@ public class WifiScanFragment extends Fragment {
      */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         //Inflate the appropriate view for ui
         View v = inflater.inflate(R.layout.fragment_wifi_scan, container, false);
         //Initialize buttons
         Button wifi_button = (Button) v.findViewById(R.id.connect_wifi);
+        final View t = container;
+
         //onclick listener for wifi_button to connect to a new wifi
         Button wifi_button_5G = (Button) v.findViewById(R.id.connect_wifi_5G);
         wifi_button.setOnClickListener(new View.OnClickListener() {
@@ -155,6 +163,8 @@ public class WifiScanFragment extends Fragment {
                                                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
                                                int wcgID = mWifiManager.addNetwork(config);
                                                boolean b =  mWifiManager.enableNetwork(wcgID, true);
+                                               Snackbar mySnackbar2 = Snackbar.make(t, "Please wait as your device re-connects.", Snackbar.LENGTH_LONG);
+                                               mySnackbar2.show();
 
                                            }
                                        });
@@ -174,6 +184,22 @@ public class WifiScanFragment extends Fragment {
         setRetainInstance(true);
         //Call the wifiscan on activity load to avoid button press
         doWifiScan();
+
+
+        wifi_button_5G.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NetworkInfo wifiCheck;
+                ConnectivityManager connectionManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                wifiCheck = connectionManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                if(wifiCheck.isConnected()){
+                    float value = getSpeed();
+                    String value1 = Float.toString(value);
+                    Snackbar mySnackbar = Snackbar.make(t, "Your current download speeds are: " + value1 + "Mbps.", Snackbar.LENGTH_LONG);
+                    mySnackbar.show();
+                }
+            }
+        });
         return v;
     }
 
@@ -213,7 +239,6 @@ public class WifiScanFragment extends Fragment {
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
         inflater.inflate(R.menu.menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -232,7 +257,6 @@ public class WifiScanFragment extends Fragment {
                 return true;
             case R.id.action_back:
                 // User chose the "Back" item, return to main activity...
-
                 Intent intent = new Intent(WifiScanFragment.this.getActivity(), MainActivity.class);
                 startActivity(intent);
                 return true;
@@ -284,7 +308,6 @@ public class WifiScanFragment extends Fragment {
         if (mWifiManager == null) {
             setupWifi();
         }
-
         boolean scanRetVal = mWifiManager.startScan();
         if (!scanRetVal) {
             Log.e(TAG, "Error scanning for Wi-Fi");
@@ -325,15 +348,10 @@ public class WifiScanFragment extends Fragment {
             wifiSSID = mScanResult.SSID;
 
 
-            //wirelessData.setSSID(wifiSSID);
             scanData.setId(wifiID);
-            //wirelessData.setChanFreq(wifiChanFreq);
-           scanData.setMAC_Address(wifiMacAddress);
-            //wirelessData.setRSSdBm(wifiRssDbm);
-            //.setSecurity(wifiSecurity);
+            scanData.setMAC_Address(wifiMacAddress);
             scanDao.insert(scanData);
-            //Toast tester to ensure correct information
-            //Toast.makeText(getContext(), hello , Toast.LENGTH_SHORT).show();
+
 
             String resultTextStr = "WIFI NAME: " + mScanResult.SSID + "; " + '\n' +
                     "BSSID: " + mScanResult.BSSID + "; " + '\n' +
@@ -377,4 +395,45 @@ public class WifiScanFragment extends Fragment {
             return mScanResultList.size();
         }
     }
+
+    public static float getSpeed(){
+        String result = null;
+        float value = 0;
+        try {
+            String ip = "8.8.4.4";  // change it into 8.8.4.4 before you test it on your android phone, 127.0.0.1 for emulator
+            Process p = Runtime.getRuntime().exec("ping -c 1 -w 1 -s 65500 " + ip);
+            InputStream input = p.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(input));
+            StringBuffer stringBuffer = new StringBuffer();
+            String content = "";
+            while ((content = in.readLine()) != null) {
+                stringBuffer.append(content);
+            }
+            Log.i("Throughput", "result content : " + stringBuffer.toString());
+            String arr[] = stringBuffer.toString().split(" ");
+            String time[] = arr[12].split("=");
+
+            Log.i("Throughout","time=" + time[1]);
+            float k = Float.parseFloat(time[1]);
+            int status = p.waitFor();
+            if (status == 0) {
+                result = "successful~";
+                value = 65508 * 8 / Float.parseFloat(time[1])/1000 ; // Mbits/s
+                return value;
+            } else {
+                result = "failed~ cannot reach the IP address";
+            }
+        } catch (IOException e) {
+            result = "failed~ IOException";
+        } catch (InterruptedException e) {
+            result = "failed~ InterruptedException";
+        } finally {
+            Log.i("Throughput","result = " + result);
+        }
+        return value;
+    }
+
+
+
+
 }
