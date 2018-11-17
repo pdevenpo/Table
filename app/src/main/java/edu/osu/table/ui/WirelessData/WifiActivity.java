@@ -9,16 +9,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 
 
 public class WifiActivity extends AppCompatActivity {
 
-    private Button throughput_test;
+    private Button btn_ping;
+    private Button btn_download;
+
+    private TextView pingtime;
     private TextView speed;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,30 +33,52 @@ public class WifiActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
 
-        speed = (TextView)findViewById(R.id.speedWifi);
-        throughput_test = (Button)findViewById(R.id.buttonWifi);
+        pingtime = (TextView)findViewById(R.id.speedWifi);
+        btn_ping = (Button)findViewById(R.id.buttonWifi);
 
-        throughput_test.setOnClickListener(new View.OnClickListener() {
+        speed = (TextView)findViewById(R.id.speedDownload);
+        btn_download = (Button)findViewById(R.id.buttonDownload);
+
+
+
+
+        btn_ping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                float value = getSpeed();
+                float value = getdelay();
                 String value1 = Float.toString(value);
-                speed.setText(value1 + "Mbps");
+                pingtime.setText(value1 + "ms");
             }
         });
 
+        btn_download.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        float rate = download();
+                        String rate1 = Float.toString(rate);
+                        speed.setText(rate1 + "Kbps");
+                    }
+                }).start();
+
+
+            }
+        });
 
     }
 
-    public static float getSpeed(){
+
+    public static float getdelay(){
 
         String result = null;
         float value = 0;
 
 
         try {
-            String ip = "8.8.4.4";  // change it into 8.8.4.4 before you test it on your android phone, 127.0.0.1 for emulator
-            Process p = Runtime.getRuntime().exec("ping -c 1 -w 1 -s 65500 " + ip);
+            Process p = Runtime.getRuntime().exec( "ping -c 1 -w 1 www.osu.edu");
 
             InputStream input = p.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(input));
@@ -63,7 +90,7 @@ public class WifiActivity extends AppCompatActivity {
             }
             Log.i("Throughput", "result content : " + stringBuffer.toString());
             String arr[] = stringBuffer.toString().split(" ");
-            String time[] = arr[12].split("=");
+            String time[] = arr[13].split("=");
 
             Log.i("Throughout","time=" + time[1]);
             float k = Float.parseFloat(time[1]);
@@ -71,7 +98,8 @@ public class WifiActivity extends AppCompatActivity {
             int status = p.waitFor();
             if (status == 0) {
                 result = "successful~";
-                value = 65508 * 8 / Float.parseFloat(time[1])/1000 ; // Mbits/s
+                //value = 64 * 8 / Float.parseFloat(time[1])/1000 ; // Mbits/s
+                value = Float.parseFloat(time[1]);
                 return value;
             } else {
                 result = "failed~ cannot reach the IP address";
@@ -87,6 +115,44 @@ public class WifiActivity extends AppCompatActivity {
     }
 
 
+    public static float download(){
+        float rate = 0;
+        float latency = getdelay();
+        String download_url = "https://www.osu.edu/assets/images/features/2018/hidden_gems_osu.jpg";
+        try{
+            URL url = new URL(download_url);
+            float red = 0;
+            float size = 0;
+            long time;
+            float time1;
+            byte[] buf = new byte[1024];
+            long startTime = System.currentTimeMillis();
+            Log.i("Throughput","start time : "+ startTime);
+            URLConnection con = url.openConnection();
 
+            //define inputStream to read from the URLConnection
+            InputStream in = con.getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(in);
+
+            while ((red = bis.read(buf)) != -1){
+                size += red;
+            }
+            long endTime = System.currentTimeMillis();
+            time = endTime-startTime;
+            time1 = time;
+
+            Log.i("Throughput","end time : "+ endTime);
+
+            Log.i("Throughput","size:"+size/1024);
+            Log.i("Throughput","time:"+time1/1000);
+
+            rate = (((size/1024)*8)/((time1-latency)/1000));
+
+        }
+        catch (IOException e){
+            Log.d("Throughput","download Error:" + e);
+        }
+        return rate;
+    }
 
 }
