@@ -18,10 +18,6 @@ data class WirelessData(@PrimaryKey(autoGenerate = true) var id: Long?,
                         @ColumnInfo(name = "linkspeed") var LinkSpeed: Int,
                         @ColumnInfo(name = "battery_percentage") var BatteryPerc: Float
 
-
-
-
 ){
     constructor():this(null,0,  "", "",-1000, 0.0, -1,-1.0f)
-
 }

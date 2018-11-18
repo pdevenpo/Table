@@ -15,9 +15,21 @@
                 android:text="TextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:id="@+id/speedWifi"/>
+        <TextView
+                android:text="TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/speedDownload"/>
+        <TextView
+                android:text="TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/speed"/>
         <Button
-                android:text="Button"
+                android:text="Ping"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:id="@+id/buttonWifi"/>
+        <Button
+                android:text="Download"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/buttonDownload"/>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
