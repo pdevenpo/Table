@@ -119,7 +119,8 @@ public class WifiActivity extends AppCompatActivity {
             }
             Log.i("Throughput", "result content : " + stringBuffer.toString());
             String arr[] = stringBuffer.toString().split(" ");
-            String time[] = arr[13].split("=");
+
+            String time[] = arr[12].split("=");
 
 
             Log.i("Throughput","time=" + time[1]);
