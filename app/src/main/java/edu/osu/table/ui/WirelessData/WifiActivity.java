@@ -1,5 +1,7 @@
 package edu.osu.table.ui.WirelessData;
 
+import android.net.TrafficStats;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +24,9 @@ public class WifiActivity extends AppCompatActivity {
     private TextView pingtime;
     private TextView speed;
 
+    private long l, total;
+    private Handler handler = new Handler();
+    private TextView download_speed;
 
 
 
@@ -38,6 +43,11 @@ public class WifiActivity extends AppCompatActivity {
 
         speed = (TextView)findViewById(R.id.speedDownload);
         btn_download = (Button)findViewById(R.id.buttonDownload);
+
+        download_speed =(TextView)findViewById(R.id.speed);
+
+        total = TrafficStats.getTotalRxBytes();
+        handler.postDelayed(runnable, 1000);
 
 
 
@@ -60,7 +70,7 @@ public class WifiActivity extends AppCompatActivity {
                     public void run() {
                         float rate = download();
                         String rate1 = Float.toString(rate);
-                        speed.setText(rate1 + "Kbps");
+                        speed.setText(rate1 + " kb/s");
                     }
                 }).start();
 
@@ -70,6 +80,19 @@ public class WifiActivity extends AppCompatActivity {
 
     }
 
+    private Runnable runnable = new Runnable() {
+
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            l = TrafficStats.getTotalRxBytes() - total;
+            total += l;
+            Log.i("speed", "download speed: " + ((l / 1024)*8) + "kb/s");
+            handler.postDelayed(runnable, 1000);
+            download_speed.setText("Download Speed:" + ((l / 1024)*8) + " kb/s");
+        }
+    };
+
 
     public static float getdelay(){
 
@@ -78,12 +101,11 @@ public class WifiActivity extends AppCompatActivity {
 
 
         try {
-            Process p = Runtime.getRuntime().exec( "ping -c 1 -w 1 www.google.com");
+            Process p = Runtime.getRuntime().exec("ping -c 1 -w 1 www.google.com");
             InputStream input = p.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(input));
             StringBuffer stringBuffer = new StringBuffer();
             String content = "";
-
             while ((content = in.readLine()) != null) {
                 stringBuffer.append(content);
             }
@@ -117,7 +139,9 @@ public class WifiActivity extends AppCompatActivity {
     public static float download(){
         float rate = 0;
         float latency = getdelay();
+        int i;
         String download_url = "https://lh3.googleusercontent.com/upeaGdkSJ_2rr4vmYb8xND5r15UGwcnJr1MBQW8W7VFxJclJ7w1VxH-Fv_OboqrPVtxY-ASxPgWhyqRUHTQFbVIX54RNpXTGEitkgQ=w1440";
+
         try{
             URL url = new URL(download_url);
             float red = 0;
@@ -126,16 +150,23 @@ public class WifiActivity extends AppCompatActivity {
             float time1;
             byte[] buf = new byte[1024];
             long startTime = System.currentTimeMillis();
-            Log.i("Throughput","start time : "+ startTime);
-            URLConnection con = url.openConnection();
+            Log.i("Throughput","start time ="+ startTime);
+            for (i = 0; i<150 ; i++){
 
-            //define inputStream to read from the URLConnection
-            InputStream in = con.getInputStream();
-            BufferedInputStream bis = new BufferedInputStream(in);
+                URLConnection con = url.openConnection();
 
-            while ((red = bis.read(buf)) != -1){
-                size += red;
+                //define inputStream to read from the URLConnection
+                InputStream in = con.getInputStream();
+                BufferedInputStream bis = new BufferedInputStream(in);
+
+                while ((red = bis.read(buf)) != -1){
+                    size += red;
+                }
+                long endTime = System.currentTimeMillis();
+
             }
+
+
             long endTime = System.currentTimeMillis();
             time = endTime-startTime;
             time1 = time;
