@@ -78,8 +78,7 @@ public class WifiActivity extends AppCompatActivity {
 
 
         try {
-            Process p = Runtime.getRuntime().exec( "ping -c 1 -w 1 www.osu.edu");
-
+            Process p = Runtime.getRuntime().exec( "ping -c 1 -w 1 www.google.com");
             InputStream input = p.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(input));
             StringBuffer stringBuffer = new StringBuffer();
@@ -90,7 +89,7 @@ public class WifiActivity extends AppCompatActivity {
             }
             Log.i("Throughput", "result content : " + stringBuffer.toString());
             String arr[] = stringBuffer.toString().split(" ");
-            String time[] = arr[13].split("=");
+            String time[] = arr[12].split("=");
 
             Log.i("Throughout","time=" + time[1]);
             float k = Float.parseFloat(time[1]);
@@ -118,7 +117,7 @@ public class WifiActivity extends AppCompatActivity {
     public static float download(){
         float rate = 0;
         float latency = getdelay();
-        String download_url = "https://www.osu.edu/assets/images/features/2018/hidden_gems_osu.jpg";
+        String download_url = "https://lh3.googleusercontent.com/upeaGdkSJ_2rr4vmYb8xND5r15UGwcnJr1MBQW8W7VFxJclJ7w1VxH-Fv_OboqrPVtxY-ASxPgWhyqRUHTQFbVIX54RNpXTGEitkgQ=w1440";
         try{
             URL url = new URL(download_url);
             float red = 0;
