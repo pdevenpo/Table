@@ -69,7 +69,7 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
             }
 
             // Write Battery Percentage to Database
-            wirelessData.BatteryPerc = batteryPct!!.toDouble()
+            wirelessData.BatteryPerc = batteryPct!!.toFloat()
 
             // Final Insert to Database
             wirelessDao?.insert(wirelessData)

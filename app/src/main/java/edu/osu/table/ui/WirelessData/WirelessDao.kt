@@ -24,6 +24,8 @@ interface WirelessDao {
     @Query("DELETE from wirelessData")
     fun deleteAll()
 
-    @Query("SELECT * FROM wirelessData ORDER BY date DESC LIMIT 500")
-    abstract fun getAllBattery(): List<WirelessData>
+    @Query("SELECT * FROM wirelessData ORDER BY date DESC LIMIT :value")
+    abstract fun getAllBattery(value: Int): List<WirelessData>
+
+
 }

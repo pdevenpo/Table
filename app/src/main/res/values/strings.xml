@@ -30,5 +30,8 @@
     <string name="wifi_button">Wifi</string>
     <string name="wifi_descriptor">Check current and past performance of your Wifi.</string>
 
+    <string name="charge_pie">Charging Graph</string>
+    <string name="discharge_pie">Discharging Graph</string>
+
 
 </resources>
