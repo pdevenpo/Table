@@ -50,8 +50,6 @@ public class WifiActivity extends AppCompatActivity {
         handler.postDelayed(runnable, 1000);
 
 
-
-
         btn_ping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,10 +66,20 @@ public class WifiActivity extends AppCompatActivity {
 
                     @Override
                     public void run() {
+
                         float rate = download();
-                        String rate1 = Float.toString(rate);
-                        speed.setText(rate1 + " kb/s");
+                        final String rate1 = Float.toString(rate);
+                        //speed.setText(rate1);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                speed.setText(rate1+ " kb/s");
+
+                            }
+                        });
                     }
+
                 }).start();
 
 
