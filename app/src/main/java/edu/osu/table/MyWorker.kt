@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.os.AsyncTask
 import android.os.BatteryManager
@@ -20,28 +21,6 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.text.DecimalFormat
 
-/*
-import android.content.ContentValues
-import android.content.ContentValues.TAG
-import android.content.Context
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import androidx.work.Worker
-import androidx.work.WorkerParameters
-import android.graphics.BitmapFactory
-import android.net.wifi.WifiManager
-import android.os.AsyncTask
-import android.support.v4.content.ContextCompat.getSystemService
-import android.support.v4.content.PermissionChecker.checkCallingOrSelfPermission
-import android.util.Log
-import android.widget.Toast
-import java.io.ByteArrayOutputStream
-import java.net.HttpURLConnection
-import java.net.URL
-import java.text.DecimalFormat
-*/
-//import com.example.background.R
-
 
 class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
 
@@ -52,84 +31,33 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
 
 
     override fun doWork(): Result {
-        //val appContext = applicationContext
-
-        //Toast.makeText(applicationContext, "Doing Some Stuff in the Back", Toast.LENGTH_SHORT).show()
-
-
-        //Log.d(TAG, "We Made It")
-        //InternetSpeedTest().execute("http://www.daycomsolutions.com/Support/BatchImage/HPIM0050w800.JPG")
-
-
-
 
         return try {
-            // Do Some Stuff Here
+            Log.d(ContentValues.TAG, "Entering MyWorker Class")
             //Instantiate the Database
-            /*
-            val database =
-                Room.databaseBuilder(getActivity()!!.getApplicationContext(), ScanDatabase::class.java, "db-wifi.db")
-                    .allowMainThreadQueries()   //Allows room to do operation on main thread
-                    .build()
-            */
             mDb_wireless = WirelessDatabase.getInstance(this.applicationContext)
             mDb_scan = ScanDatabase.getInstance(this.applicationContext)
 
             val wirelessDao = mDb_wireless?.wirelessDataDao()
             val scanDao = mDb_scan?.scanDataDao()
 
-
-            Log.d(ContentValues.TAG, "We Made It")
-
-            /*
-            var startTime: Long = 0
-            var endTime: Long = 0
-            var takenTime: Long = 0
-
-            startTime = System.currentTimeMillis()
-            Log.d(ContentValues.TAG, "doInBackground: StartTime: $startTime")
-            var bmp: Bitmap? = null
-
-            val ulrn = URL("http://www.daycomsolutions.com/Support/BatchImage/HPIM0050w800.JPG")
-            val con = ulrn.openConnection() as HttpURLConnection
-            val `is` = con.inputStream
-            bmp = BitmapFactory.decodeStream(`is`)
-
-            val bitmap = bmp
-            val stream = ByteArrayOutputStream()
-            bitmap!!.compress(Bitmap.CompressFormat.JPEG, 99, stream)
-            val imageInByte = stream.toByteArray()
-            val lengthbmp = imageInByte.size.toLong()
-
-            if (null != bmp) {
-                endTime = System.currentTimeMillis()
-                Log.d(ContentValues.TAG, "doInBackground: EndTIme$endTime") }
-
-            if (lengthbmp != null){
-                val dataSize = lengthbmp
-                takenTime = endTime - startTime
-                val s = takenTime.toDouble() / 1000
-                val speed = dataSize / s
-                Log.d(ContentValues.TAG, "onPostExecute: " + "" + DecimalFormat("##.##").format(speed) + "kb/second")
-                speed_public = speed
-            }
-            */
-            //InternetSpeedTest().execute("http://www.daycomsolutions.com/Support/BatchImage/HPIM0050w800.JPG")
-            // Write to Database Throughput
+            // Collect Current WiFi Data & Write to Database
             val wifiManager = getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
             val info = wifiManager.connectionInfo
-            //val ssid = info.ssid
-            val bssid = info.bssid
-            //val linkspeed = info.linkSpeed
-            //val macaddress = info.macAddress
-            val rss = info.rssi
 
             var wirelessData = WirelessData()
-
             wirelessData.CurDate = System.currentTimeMillis()
-            wirelessData.MAC_Address = bssid
-            wirelessData.RSSdBm = rss
 
+            // Only record WiFi Data in Database if Connected
+            if( info.linkSpeed != -1) {
+                wirelessData.SSID = info.ssid
+                wirelessData.MAC_Address = info.bssid
+                wirelessData.RSSdBm = info.rssi
+                wirelessData.LinkSpeed = info.linkSpeed
+
+                //TODO - Add Corrected Throughput Function Call Here
+                wirelessData.ThroughputMpbs = getThroughput()
+            }
             // Get Battery Percentage
             val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
                 this.applicationContext.registerReceiver(null, ifilter)
@@ -140,22 +68,21 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
                 level / scale.toFloat()
             }
 
-            wirelessData.BatteryPerc = batteryPct!!.toDouble()
-
-            wirelessData.ThroughputMpbs = getThroughput()
-
+            // Write Battery Percentage to Database
+            wirelessData.BatteryPerc = batteryPct!!.toFloat()
+            // Final Insert to Database
             wirelessDao?.insert(wirelessData)
 
-            //TODO - Add WiFi Scan Fragment - Are you happy Ben?
+            //TODO - Add WiFi Scan Fragment
 
             Result.SUCCESS
         } catch (throwable: Throwable) {
-            Log.e(ContentValues.TAG, "Error: Who Knows... Shit Happens", throwable)
+            Log.e(ContentValues.TAG, "Error: Fault in Worker Task", throwable)
             Result.FAILURE
         }
     }
 
-
+    // This function will be removed and replaced by Yaxiang's Code
     private fun getThroughput():  Double {
         var beginTime: Long = 0
         var finishTime: Long = 0
@@ -251,3 +178,42 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
         }
     }
 }
+
+
+// Other code - kept for reference
+
+/*
+            var startTime: Long = 0
+            var endTime: Long = 0
+            var takenTime: Long = 0
+
+            startTime = System.currentTimeMillis()
+            Log.d(ContentValues.TAG, "doInBackground: StartTime: $startTime")
+            var bmp: Bitmap? = null
+
+            val ulrn = URL("http://www.daycomsolutions.com/Support/BatchImage/HPIM0050w800.JPG")
+            val con = ulrn.openConnection() as HttpURLConnection
+            val `is` = con.inputStream
+            bmp = BitmapFactory.decodeStream(`is`)
+
+            val bitmap = bmp
+            val stream = ByteArrayOutputStream()
+            bitmap!!.compress(Bitmap.CompressFormat.JPEG, 99, stream)
+            val imageInByte = stream.toByteArray()
+            val lengthbmp = imageInByte.size.toLong()
+
+            if (null != bmp) {
+                endTime = System.currentTimeMillis()
+                Log.d(ContentValues.TAG, "doInBackground: EndTIme$endTime") }
+
+            if (lengthbmp != null){
+                val dataSize = lengthbmp
+                takenTime = endTime - startTime
+                val s = takenTime.toDouble() / 1000
+                val speed = dataSize / s
+                Log.d(ContentValues.TAG, "onPostExecute: " + "" + DecimalFormat("##.##").format(speed) + "kb/second")
+                speed_public = speed
+            }
+            */
+
+//InternetSpeedTest().execute("http://www.daycomsolutions.com/Support/BatchImage/HPIM0050w800.JPG")

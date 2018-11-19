@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
 
     //Allow cardview click to view battery history
     fun onClickListenerGraph(v: View) {
-        val myIntent = Intent(baseContext, Graph::class.java)
+        val myIntent = Intent(baseContext, GraphActivity::class.java)
         startActivity(myIntent)
     }
 

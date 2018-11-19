@@ -26,7 +26,7 @@
         </activity>
         <activity android:name=".ui.ScanActivity.WifiScanActivity"/>
         <activity android:name=".ui.RecommendationsActivity.RecommendationActivity"/>
-        <activity android:name=".Graph"/>
+        <activity android:name=".GraphActivity"/>
         <activity android:name=".ui.SettingsActivity.Settings"/>
         <!--
             <service android:name=".MyBatteryIntentService"
