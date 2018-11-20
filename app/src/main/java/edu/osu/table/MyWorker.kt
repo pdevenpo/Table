@@ -58,6 +58,7 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
             var wirelessData = WirelessData()
             var scanData = ScanData()
             wirelessData.CurDate = System.currentTimeMillis()
+            wirelessData.SSID = "4G-LTE"
 
             // Only record WiFi Data in Database if Connected
             if( info.linkSpeed != -1) {
