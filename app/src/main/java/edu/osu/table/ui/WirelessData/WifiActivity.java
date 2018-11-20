@@ -50,8 +50,6 @@ public class WifiActivity extends AppCompatActivity {
         handler.postDelayed(runnable, 1000);
 
 
-
-
         btn_ping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,10 +66,20 @@ public class WifiActivity extends AppCompatActivity {
 
                     @Override
                     public void run() {
+
                         float rate = download();
-                        String rate1 = Float.toString(rate);
-                        speed.setText(rate1 + " kb/s");
+                        final String rate1 = Float.toString(rate);
+                        //speed.setText(rate1);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                speed.setText(rate1+ " kb/s");
+
+                            }
+                        });
                     }
+
                 }).start();
 
 
@@ -110,17 +118,18 @@ public class WifiActivity extends AppCompatActivity {
                 stringBuffer.append(content);
             }
             Log.i("Throughput", "result content : " + stringBuffer.toString());
-            String arr[] = stringBuffer.toString().split(" ");
-            String time[] = arr[12].split("=");
+            String arr[] = stringBuffer.toString().split("=");
+            String time[] = arr[3].split(" ");
 
-            Log.i("Throughput","time=" + time[1]);
-            float k = Float.parseFloat(time[1]);
+
+            Log.i("Throughput","time=" + time[0]);
+            float k = Float.parseFloat(time[0]);
 
             int status = p.waitFor();
             if (status == 0) {
                 result = "successful~";
                 //value = 64 * 8 / Float.parseFloat(time[1])/1000 ; // Mbits/s
-                value = Float.parseFloat(time[1]);
+                value = Float.parseFloat(time[0]);
                 return value;
             } else {
                 result = "failed~ cannot reach the IP address";
