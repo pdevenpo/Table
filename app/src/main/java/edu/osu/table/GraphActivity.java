@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.LimitLine;
@@ -250,6 +251,11 @@ public class GraphActivity extends AppCompatActivity {
         int k;
         List<WirelessData> singlessiddata = new ArrayList<WirelessData>();
         singlessiddata = reverse(wireless_database.wirelessDataDao().getPerSSIDEntries(ssidName, 96));
+
+        if (singlessiddata.size() == 0)
+        {
+            return;
+        }
         //chart = findViewById(R.id.battery_first_wifi);
         LineData lineData = new LineData();
         ArrayList<Entry> values = new ArrayList<>();
@@ -356,6 +362,11 @@ public class GraphActivity extends AppCompatActivity {
         List<WirelessData> alldbdata = new ArrayList<WirelessData>();
 
         alldbdata = wireless_database.wirelessDataDao().getAllBattery(500);
+        if (alldbdata.size() == 0)
+        {
+            Toast.makeText(this, "No data to show.", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         LineData lineData = new LineData();
         ArrayList<Entry> values = new ArrayList<>();
