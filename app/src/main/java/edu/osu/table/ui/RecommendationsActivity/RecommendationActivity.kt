@@ -8,6 +8,32 @@ import android.view.MenuItem
 import android.widget.TextView
 import edu.osu.table.MainActivity
 import edu.osu.table.R
+import android.widget.Toast
+import com.google.common.io.Flushables.flush
+import java.nio.file.Files.exists
+import java.io.File.separator
+import android.os.Environment.getExternalStorageDirectory
+import android.app.ProgressDialog
+import android.content.Context
+import android.net.Uri
+//import edu.osu.table.MainActivity
+import android.os.AsyncTask
+import android.os.Environment
+import android.util.Log
+import android.webkit.MimeTypeMap
+import okhttp3.Cache
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okio.Okio
+import java.io.*
+import java.net.URL
+import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class RecommendationActivity : AppCompatActivity() {
@@ -29,9 +55,12 @@ class RecommendationActivity : AppCompatActivity() {
         //mDbWorkerThread = DbWorkerThread("dbWorkerThread")
         //mDbWorkerThread.start()
 
-        mBatteryPercent = findViewById(R.id.batt_perc)
-        mTime = findViewById(R.id.time_id)
+        //mBatteryPercent = findViewById(R.id.batt_perc)
+        //mTime = findViewById(R.id.time_id)
 
+        DownloadFile().execute("https://edmullen.net/test/rc.jpg")
+
+        //val file = downloadFile("https://www.travelopy.com/static/img/cover.jpg", applicationContext.cacheDir, null, null)
         //mDb = WirelessDatabase.getInstance(this)
 
         // Note that the Toolbar defined in the layout has the id "my_toolbar"
@@ -60,6 +89,263 @@ class RecommendationActivity : AppCompatActivity() {
 
         //Thread.sleep(1000)
 
+    }
+
+    private inner class DownloadFile : AsyncTask<String, String, String>() {
+
+        //private var progressDialog: ProgressDialog? = null
+        private var fileName: String? = null
+        private var folder: String? = null
+        private val isDownloaded: Boolean = false
+
+        /**
+         * Before starting background thread
+         * Show Progress Bar Dialog
+         */
+        /*override fun onPreExecute() {
+            super.onPreExecute()
+            this.progressDialog = ProgressDialog(this@RecommendationActivity)
+            this.progressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+            this.progressDialog!!.setCancelable(false)
+            this.progressDialog!!.show()
+        }*/
+
+        /**
+         * Downloading file in background thread
+         */
+        override fun doInBackground(vararg f_url: String): String {
+
+
+            var count: Int
+            try {
+
+                val dir = applicationContext.cacheDir
+                val fileExt = null
+                val name = null
+
+                var beginTime: Long = 0
+                var finishTime: Long = 0
+
+
+                //val client = OkHttpClient()
+                val client = OkHttpClient.Builder()
+                    .cache(Cache(dir, 1000))
+                    .connectTimeout(10,TimeUnit.SECONDS)
+                    .readTimeout(10, TimeUnit.SECONDS)
+                    .build()
+
+
+                //client.setReadTimeout(15, TimeUnit.SECONDS)
+
+                //val response = client.newCall()
+                //val client = OkHttpClient()
+                //client.setConnectTimeout(15, TimeUnit.SECONDS) // connect timeout
+                //client.setReadTimeout(15, TimeUnit.SECONDS)
+                val request = Request.Builder()
+                    .url("https://upload.wikimedia.org/wikipedia/commons/f/ff/Pizigani_1367_Chart_10MB.jpg")
+                    .build()
+
+
+
+
+                beginTime = System.currentTimeMillis()
+                val response = client.newCall(request).execute()
+
+
+                val contentType = response.header("content-type", null)
+                var ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(contentType)
+                ext = if (ext == null) {
+                    fileExt
+                } else {
+                    ".$ext"
+                }
+
+                // use provided name or generate a temp file
+                var file: File? = null
+                file = if (name != null) {
+                    val filename = String.format("%s%s", name, ext)
+                    File(dir.absolutePath, filename)
+                } else {
+                    //val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-kkmmss"))
+                    File.createTempFile("something", ext, dir)
+                }
+
+                val body = response.body()
+                val sink = Okio.buffer(Okio.sink(file))
+                /*
+                sink.writeAll(body!!.source())
+                sink.close()
+                body.close()
+                 */
+
+
+                body?.source().use { input ->
+                    sink.use { output ->
+                        output.writeAll(input)
+                    }
+                }
+                finishTime = System.currentTimeMillis()
+                val size = file!!.length()
+
+                var delta_time = finishTime - beginTime
+                var throughtheput = (((size * 8.0) / 1024) / 1024) / delta_time * 1000
+                Log.d("ElSizoDelFileo", size.toString())
+                Log.d("DeltaTeaTime", delta_time.toString())
+                Log.d("Throughtheput", "WorkDamnIt: " + DecimalFormat("##.####").format(throughtheput))
+                //Toast.makeText(applicationContext,delta_time.toString(), 10)
+                //return file!!
+
+
+
+                //val file = downloadFile("https://upload.wikimedia.org/wikipedia/commons/f/ff/Pizigani_1367_Chart_10MB.jpg", applicationContext.cacheDir, null, null)
+
+                /*
+                val url = URL(f_url[0])
+                val connection = url.openConnection()
+                connection.connect()
+                // getting file length
+                val lengthOfFile = connection.getContentLength()
+
+
+                // input stream to read file - with 8k buffer
+                val input = BufferedInputStream(url.openStream(), 8192)
+
+                val timestamp = SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(Date())
+
+                //Extract file name from URL
+                fileName = f_url[0].substring(f_url[0].lastIndexOf('/') + 1, f_url[0].length)
+
+                //Append timestamp to file name
+                fileName = timestamp + "_" + fileName
+
+                val directory = File.createTempFile(fileName,null)
+                folder = directory.absolutePath
+
+                //private fun getTempFile(context: RecommendationActivity, url: String): File? =
+                //    Uri.parse(url)?.lastPathSegment?.let { filename ->
+                //        File.createTempFile(filename, null, context.cacheDir)
+                //    }
+
+                //External directory path to save file
+                //folder = Environment.getExternalStorageDirectory() + File.separator + "androiddeft/"
+
+                //Create androiddeft folder if it does not exist
+                //val directory = File(folder)
+
+                if (!directory.exists()) {
+                    directory.mkdirs()
+                }
+
+                // Output stream to write file
+
+
+                //val file = downloadFile("https://www.travelopy.com/static/img/cover.jpg", applicationContext.cacheDir, null, null)
+
+                val output = FileOutputStream(folder + fileName)
+                val data = ByteArray(1024)
+
+                var total: Long = 0
+
+                count = input.read(data)
+                while (count != -1) {
+                    total += count.toLong()
+                    // publishing the progress....
+                    // After this onProgressUpdate will be called
+                    publishProgress("" + (total * 100 / lengthOfFile).toInt())
+                    Log.d("Something_Tag", "Progress: " + (total * 100 / lengthOfFile).toInt())
+
+                    // writing data to file
+                    output.write(data, 0, count)
+                    count = input.read(data)
+                }
+
+                // flushing output
+                output.flush()
+
+                // closing streams
+                output.close()
+                input.close()
+                return "Downloaded at: $folder$fileName"
+                */
+                return "Throughput: " + DecimalFormat("##.##").format(throughtheput) + "Mbps"
+
+            } catch (e: Exception) {
+                Log.e("Error: ", e.message)
+            }
+
+            return "Something went wrong"
+        }
+
+        /**
+         * Updating progress bar
+         */
+        /*override fun onProgressUpdate(vararg progress: String) {
+            // setting progress percentage
+            progressDialog!!.progress = Integer.parseInt(progress[0])
+        }*/
+
+
+        override fun onPostExecute(message: String) {
+            // dismiss the dialog after the file was downloaded
+            //this.progressDialog!!.dismiss()
+
+            // Display File path after downloading
+            Toast.makeText(
+                applicationContext,
+                message, Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    fun downloadFile(url: String, dir: File, name: String?, fileExt: String?): File {
+        var beginTime: Long = 0
+        var finishTime: Long = 0
+        beginTime = System.currentTimeMillis()
+
+        val client = OkHttpClient()
+        val request = Request.Builder().url(url).build()
+
+        val response = client.newCall(request).execute()
+        val contentType = response.header("content-type", null)
+        var ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(contentType)
+        ext = if (ext == null) {
+            fileExt
+        } else {
+            ".$ext"
+        }
+
+        // use provided name or generate a temp file
+        var file: File? = null
+        file = if (name != null) {
+            val filename = String.format("%s%s", name, ext)
+            File(dir.absolutePath, filename)
+        } else {
+            val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-kkmmss"))
+            File.createTempFile(timestamp, ext, dir)
+        }
+
+        val body = response.body()
+        val sink = Okio.buffer(Okio.sink(file))
+        /*
+        sink.writeAll(body!!.source())
+        sink.close()
+        body.close()
+         */
+
+        body?.source().use { input ->
+            sink.use { output ->
+                output.writeAll(input)
+            }
+        }
+        val size = file!!.length()
+        finishTime = System.currentTimeMillis()
+        var delta_time = finishTime - beginTime
+        var throughtheput = size * 8.0 / 1024 /1024 / delta_time
+        Log.d("ElSizoDelFileo", size.toString())
+        Log.d("DeltaTeaTime", delta_time.toString())
+        Log.d("Throughtheput", "WorkDamnIt: " + DecimalFormat("##.####").format(throughtheput))
+        //Toast.makeText(applicationContext,delta_time.toString(), 10)
+        return file
     }
 
     // Mike's Modifications
