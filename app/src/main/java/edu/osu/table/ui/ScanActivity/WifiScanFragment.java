@@ -8,14 +8,19 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.TrafficStats;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -35,10 +40,13 @@ import android.widget.Toast;
 import edu.osu.table.MainActivity;
 import edu.osu.table.R;
 
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 /**
- * Document Provided by Professor Adam Champion of The Ohio State University for use in
+ * Partial pieces of the document Provided by Professor Adam Champion of The Ohio State University for use in
  * Professor Dong Xuan's Mobile Handset System class with permission from Professor Champion.
  * Other Documents provided by him are prefaced with this descriptor at the top of the file -->
  */
@@ -56,6 +64,15 @@ public class WifiScanFragment extends Fragment {
      * variables) or "s" (for services).
      * ************************************************************************
      */
+    private Button btn_ping;
+    private Button btn_download;
+
+    private TextView pingtime;
+    private TextView speed;
+
+    private long l, total;
+    private Handler handler = new Handler();
+    private TextView download_speed;
     private WifiManager mWifiManager;
     private IntentFilter mIntentFilter;
     private RecyclerView mScanResultRecyclerView;
@@ -94,7 +111,6 @@ public class WifiScanFragment extends Fragment {
         {
             // Get the Intent action.
             String action = intent.getAction();
-
             // If the WiFi scan results are ready, iterate through them and
             // record the WiFi APs' SSIDs, BSSIDs, WiFi capabilities, radio
             // frequency, and signal strength (in dBm).
@@ -104,7 +120,6 @@ public class WifiScanFragment extends Fragment {
                 if (mWifiManager == null) {
                     setupWifi();
                 }
-
                 List<ScanResult> scanResults = mWifiManager.getScanResults();
                 Log.d(TAG, "Wi-Fi scan results available");
                 int numResults = scanResults.size(), numTotalResults = mScanResultList.size();
@@ -124,10 +139,13 @@ public class WifiScanFragment extends Fragment {
      */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         //Inflate the appropriate view for ui
         View v = inflater.inflate(R.layout.fragment_wifi_scan, container, false);
         //Initialize buttons
         Button wifi_button = (Button) v.findViewById(R.id.connect_wifi);
+        final View t = container;
+
         //onclick listener for wifi_button to connect to a new wifi
         Button wifi_button_5G = (Button) v.findViewById(R.id.connect_wifi_5G);
         wifi_button.setOnClickListener(new View.OnClickListener() {
@@ -155,6 +173,8 @@ public class WifiScanFragment extends Fragment {
                                                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
                                                int wcgID = mWifiManager.addNetwork(config);
                                                boolean b =  mWifiManager.enableNetwork(wcgID, true);
+                                               Snackbar mySnackbar2 = Snackbar.make(t, "Please wait as your device re-connects.", Snackbar.LENGTH_LONG);
+                                               mySnackbar2.show();
 
                                            }
                                        });
@@ -174,6 +194,35 @@ public class WifiScanFragment extends Fragment {
         setRetainInstance(true);
         //Call the wifiscan on activity load to avoid button press
         doWifiScan();
+
+        wifi_button_5G.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        float rate = download();
+                        rate = (float) rate/1000;
+                        final String rate1 = Float.toString(rate);
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Snackbar mySnackbar = Snackbar.make(t, "Your current download speeds are: " + rate1 + "Mbps.", Snackbar.LENGTH_LONG);
+                                mySnackbar.show();
+
+                            }
+                        });
+                    }
+
+                }).start();
+
+
+            }
+        });
+
         return v;
     }
 
@@ -213,7 +262,6 @@ public class WifiScanFragment extends Fragment {
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
         inflater.inflate(R.menu.menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -232,7 +280,6 @@ public class WifiScanFragment extends Fragment {
                 return true;
             case R.id.action_back:
                 // User chose the "Back" item, return to main activity...
-
                 Intent intent = new Intent(WifiScanFragment.this.getActivity(), MainActivity.class);
                 startActivity(intent);
                 return true;
@@ -284,7 +331,6 @@ public class WifiScanFragment extends Fragment {
         if (mWifiManager == null) {
             setupWifi();
         }
-
         boolean scanRetVal = mWifiManager.startScan();
         if (!scanRetVal) {
             Log.e(TAG, "Error scanning for Wi-Fi");
@@ -325,15 +371,10 @@ public class WifiScanFragment extends Fragment {
             wifiSSID = mScanResult.SSID;
 
 
-            //wirelessData.setSSID(wifiSSID);
             scanData.setId(wifiID);
-            //wirelessData.setChanFreq(wifiChanFreq);
-           scanData.setMAC_Address(wifiMacAddress);
-            //wirelessData.setRSSdBm(wifiRssDbm);
-            //.setSecurity(wifiSecurity);
+            scanData.setMAC_Address(wifiMacAddress);
             scanDao.insert(scanData);
-            //Toast tester to ensure correct information
-            //Toast.makeText(getContext(), hello , Toast.LENGTH_SHORT).show();
+
 
             String resultTextStr = "WIFI NAME: " + mScanResult.SSID + "; " + '\n' +
                     "BSSID: " + mScanResult.BSSID + "; " + '\n' +
@@ -377,4 +418,113 @@ public class WifiScanFragment extends Fragment {
             return mScanResultList.size();
         }
     }
+
+    public static float getdelay(){
+
+        String result = null;
+        float value = 0;
+
+
+        try {
+            Process p = Runtime.getRuntime().exec("ping -c 1 -w 1 www.google.com");
+            InputStream input = p.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(input));
+            StringBuffer stringBuffer = new StringBuffer();
+            String content = "";
+            while ((content = in.readLine()) != null) {
+                stringBuffer.append(content);
+            }
+            Log.i("Throughput", "result content : " + stringBuffer.toString());
+            String arr[] = stringBuffer.toString().split("=");
+            String time[] = arr[3].split(" ");
+
+
+            Log.i("Throughput","time=" + time[0]);
+            float k = Float.parseFloat(time[0]);
+
+            int status = p.waitFor();
+            if (status == 0) {
+                result = "successful~";
+                //value = 64 * 8 / Float.parseFloat(time[1])/1000 ; // Mbits/s
+                value = Float.parseFloat(time[0]);
+                return value;
+            } else {
+                result = "failed~ cannot reach the IP address";
+            }
+        } catch (IOException e) {
+            result = "failed~ IOException";
+        } catch (InterruptedException e) {
+            result = "failed~ InterruptedException";
+        } finally {
+            Log.i("Throughput","result = " + result);
+        }
+        return value;
+    }
+
+    private Runnable runnable = new Runnable() {
+
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            l = TrafficStats.getTotalRxBytes() - total;
+            total += l;
+            Log.i("speed", "download speed: " + ((l / 1024)*8) + "kb/s");
+            handler.postDelayed(runnable, 1000);
+            download_speed.setText("Download Speed:" + ((l / 1024)*8) + " kb/s");
+        }
+    };
+
+
+    public static float download(){
+        float rate = 0;
+        float latency = getdelay();
+        int i;
+        String download_url = "https://lh3.googleusercontent.com/upeaGdkSJ_2rr4vmYb8xND5r15UGwcnJr1MBQW8W7VFxJclJ7w1VxH-Fv_OboqrPVtxY-ASxPgWhyqRUHTQFbVIX54RNpXTGEitkgQ=w1440";
+
+        try{
+            URL url = new URL(download_url);
+            float red = 0;
+            float size = 0;
+            long time;
+            float time1;
+            byte[] buf = new byte[1024];
+            long startTime = System.currentTimeMillis();
+            Log.i("Throughput","start time ="+ startTime);
+            for (i = 0; i<150 ; i++){
+
+                URLConnection con = url.openConnection();
+
+                //define inputStream to read from the URLConnection
+                InputStream in = con.getInputStream();
+                BufferedInputStream bis = new BufferedInputStream(in);
+
+                while ((red = bis.read(buf)) != -1){
+                    size += red;
+                }
+                long endTime = System.currentTimeMillis();
+
+            }
+
+
+            long endTime = System.currentTimeMillis();
+            time = endTime-startTime;
+            time1 = time;
+
+            Log.i("Throughput","end time : "+ endTime);
+
+            Log.i("Throughput","size:"+size/1024);
+            Log.i("Throughput","time:"+time1/1000);
+
+            rate = (((size/1024)*8)/((time1-latency)/1000));
+
+        }
+        catch (IOException e){
+            Log.d("Throughput","download Error:" + e);
+        }
+        return rate;
+    }
+
+
+
+
 }

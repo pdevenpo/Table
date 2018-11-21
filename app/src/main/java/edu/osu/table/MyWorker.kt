@@ -19,7 +19,17 @@ import edu.osu.table.ui.WirelessData.WirelessDatabase
 import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import java.time.LocalTime
 import java.text.DecimalFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import android.widget.Toast;
+import edu.osu.table.ui.ScanActivity.ScanData
+import java.util.*
+
+//import com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table
+
+
 
 
 class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
@@ -46,7 +56,9 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
             val info = wifiManager.connectionInfo
 
             var wirelessData = WirelessData()
+            var scanData = ScanData()
             wirelessData.CurDate = System.currentTimeMillis()
+            wirelessData.SSID = "4G-LTE"
 
             // Only record WiFi Data in Database if Connected
             if( info.linkSpeed != -1) {
@@ -73,14 +85,35 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
             // Final Insert to Database
             wirelessDao?.insert(wirelessData)
 
-            //TODO - Add WiFi Scan Fragment
+            //-----------------------------ScanResults-------------------------------------
+            //TODO Store in Database
+            val lWifiManager = this.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            val a = lWifiManager.startScan()//request a scan for access points
+            val lResults = lWifiManager.getScanResults()
 
+            for (lScanResult in lResults) {
+                val curTime = Calendar.getInstance().time
+                val curTimeLong = curTime.time.toLong()
+                scanData.CurDate = curTimeLong
+                scanData.MAC_Address = lScanResult.BSSID;
+                //val ssid = lScanResult.SSID;
+                scanData.Security =  lScanResult.capabilities;
+                //scanData. = lScanResult.level;
+                scanData.ChanFreq =  lScanResult.frequency.toDouble()
+                //scanData.ChanFreq = frequency.toDouble()
+
+            }
+            scanDao?.insert(scanData)
+            //----------------------------endScanResults-------------------------------------
             Result.SUCCESS
         } catch (throwable: Throwable) {
             Log.e(ContentValues.TAG, "Error: Fault in Worker Task", throwable)
             Result.FAILURE
         }
     }
+
+
+
 
     // This function will be removed and replaced by Yaxiang's Code
     private fun getThroughput():  Double {
@@ -177,7 +210,17 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
             }
         }
     }
+
+
+
+
+
 }
+
+
+
+
+
 
 
 // Other code - kept for reference
