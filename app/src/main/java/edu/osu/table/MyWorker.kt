@@ -11,6 +11,7 @@ import android.net.wifi.WifiManager
 import android.os.AsyncTask
 import android.os.BatteryManager
 import android.util.Log
+import android.webkit.MimeTypeMap
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import edu.osu.table.ui.ScanActivity.ScanDatabase
@@ -25,7 +26,13 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import android.widget.Toast;
 import edu.osu.table.ui.ScanActivity.ScanData
+import okhttp3.Cache
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okio.Okio
+import java.io.File
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 //import com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table
 
@@ -36,9 +43,6 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
 
     private var mDb_wireless: WirelessDatabase? = null
     private var mDb_scan: ScanDatabase? = null
-
-    var speed_public = -1.0
-
 
     override fun doWork(): Result {
 
@@ -58,7 +62,7 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
             var wirelessData = WirelessData()
             var scanData = ScanData()
             wirelessData.CurDate = System.currentTimeMillis()
-            wirelessData.SSID = "4G-LTE"
+            wirelessData.SSID = "4G-LTE"  // Default if no WiFi
 
             // Only record WiFi Data in Database if Connected
             if( info.linkSpeed != -1) {
@@ -66,9 +70,7 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
                 wirelessData.MAC_Address = info.bssid
                 wirelessData.RSSdBm = info.rssi
                 wirelessData.LinkSpeed = info.linkSpeed
-
-                //TODO - Add Corrected Throughput Function Call Here
-                wirelessData.ThroughputMpbs = getThroughput()
+                wirelessData.ThroughputMpbs = getThroughput_v2()
             }
             // Get Battery Percentage
             val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
@@ -112,10 +114,64 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
         }
     }
 
+    // Mike's Updated Throughput Function
+    private fun getThroughput_v2(): Double {
+        val dir = applicationContext.cacheDir
+        val fileExt = null
+        val name = null
+        var beginTime: Long = 0
+        var finishTime: Long = 0
 
+        val client = OkHttpClient.Builder()
+            .cache(Cache(dir, 1000))
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .build()
 
+        val request = Request.Builder()
+            .url("https://upload.wikimedia.org/wikipedia/commons/f/ff/Pizigani_1367_Chart_10MB.jpg")
+            .build()
 
-    // This function will be removed and replaced by Yaxiang's Code
+        beginTime = System.currentTimeMillis()
+        val response = client.newCall(request).execute()
+        val contentType = response.header("content-type", null)
+        var ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(contentType)
+        ext = if (ext == null) {
+            fileExt
+        } else {
+            ".$ext"
+        }
+
+        // use provided name or generate a temp file
+        var file: File? = null
+        file = if (name != null) {
+            val filename = String.format("%s%s", name, ext)
+            File(dir.absolutePath, filename)
+        } else {
+            File.createTempFile("something", ext, dir)
+        }
+
+        val body = response.body()
+        val sink = Okio.buffer(Okio.sink(file))
+
+        body?.source().use { input ->
+            sink.use { output ->
+                output.writeAll(input)
+            }
+        }
+        finishTime = System.currentTimeMillis()
+        val size = file!!.length()
+
+        var delta_time = finishTime - beginTime
+        var throughput_out = (((size * 8.0) / 1024) / 1024) / delta_time * 1000
+        Log.d("File Size", size.toString())
+        Log.d("Delta Time", delta_time.toString())
+        Log.d("Throughput", DecimalFormat("##.####").format(throughput_out))
+
+        return throughput_out
+    }
+
+    // Mike's Original Throughput Function
     private fun getThroughput():  Double {
         var beginTime: Long = 0
         var finishTime: Long = 0
@@ -145,118 +201,4 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
         return speed
 
     }
-    /* InterenetSpeed Test was modified from : https://stackoverflow.com/questions/19258254/how-to-correctly-measure-download-speed-with-java-android */
-
-    // This downloads a JPG image, and it calculates how long it took to do so for the throughput.
-    inner class InternetSpeedTest : AsyncTask<String, Void, String>() {
-
-        internal var startTime: Long = 0
-        internal var endTime: Long = 0
-        private var takenTime: Long = 0
-
-        override fun doInBackground(vararg paramVarArgs: String): String? {
-
-            startTime = System.currentTimeMillis()
-            Log.d(ContentValues.TAG, "doInBackground: StartTime: $startTime")
-
-            //val app = AndroidAppHelper.currentApplication()
-
-            //val ctx = app.getApplicationContext()
-
-            /*val res = checkCallingOrSelfPermission(android.Manifest.permission.INTERNET)
-
-            if (res == PackageManager.PERMISSION_GRANTED)
-                Log.d(ContentValues.TAG,"Internet granted");
-            else
-                Log.d(ContentValues.TAG,"No internet");
-            */
-            var bmp: Bitmap? = null
-            try {
-                val ulrn = URL(paramVarArgs[0])
-                val con = ulrn.openConnection() as HttpURLConnection
-                val `is` = con.inputStream
-                bmp = BitmapFactory.decodeStream(`is`)
-
-                val bitmap = bmp
-                val stream = ByteArrayOutputStream()
-                bitmap!!.compress(Bitmap.CompressFormat.JPEG, 99, stream)
-                val imageInByte = stream.toByteArray()
-                val lengthbmp = imageInByte.size.toLong()
-
-                if (null != bmp) {
-                    endTime = System.currentTimeMillis()
-                    Log.d(ContentValues.TAG, "doInBackground: EndTIme$endTime")
-                    return lengthbmp.toString() + ""
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
-            return null
-
-        }
-
-        override fun onPostExecute(result: String?) {
-
-            if (result != null) {
-                val dataSize = (Integer.parseInt(result) / 1024).toLong()
-                takenTime = endTime - startTime
-                val s = takenTime.toDouble() / 1000
-                val speed = dataSize / s
-                Log.d(ContentValues.TAG, "onPostExecute: " + "" + DecimalFormat("##.##").format(speed) + "kb/second")
-                speed_public = speed
-                //Toast.makeText(this@MyWorker, DecimalFormat("##.##").format(speed_public) + "kb/sec", Toast.LENGTH_SHORT).show()
-
-            }
-        }
-    }
-
-
-
-
-
 }
-
-
-
-
-
-
-
-// Other code - kept for reference
-
-/*
-            var startTime: Long = 0
-            var endTime: Long = 0
-            var takenTime: Long = 0
-
-            startTime = System.currentTimeMillis()
-            Log.d(ContentValues.TAG, "doInBackground: StartTime: $startTime")
-            var bmp: Bitmap? = null
-
-            val ulrn = URL("http://www.daycomsolutions.com/Support/BatchImage/HPIM0050w800.JPG")
-            val con = ulrn.openConnection() as HttpURLConnection
-            val `is` = con.inputStream
-            bmp = BitmapFactory.decodeStream(`is`)
-
-            val bitmap = bmp
-            val stream = ByteArrayOutputStream()
-            bitmap!!.compress(Bitmap.CompressFormat.JPEG, 99, stream)
-            val imageInByte = stream.toByteArray()
-            val lengthbmp = imageInByte.size.toLong()
-
-            if (null != bmp) {
-                endTime = System.currentTimeMillis()
-                Log.d(ContentValues.TAG, "doInBackground: EndTIme$endTime") }
-
-            if (lengthbmp != null){
-                val dataSize = lengthbmp
-                takenTime = endTime - startTime
-                val s = takenTime.toDouble() / 1000
-                val speed = dataSize / s
-                Log.d(ContentValues.TAG, "onPostExecute: " + "" + DecimalFormat("##.##").format(speed) + "kb/second")
-                speed_public = speed
-            }
-            */
-
-//InternetSpeedTest().execute("http://www.daycomsolutions.com/Support/BatchImage/HPIM0050w800.JPG")
