@@ -30,4 +30,7 @@ interface WirelessDao {
     @Query("SELECT * FROM  wirelessData WHERE ssid IS :name ORDER BY date DESC LIMIT :value")
     abstract fun getPerSSIDEntries(name: String, value: Int): List<WirelessData>
 
+    @Query("SELECT date FROM wirelessData ORDER BY date DESC LIMIT :value")
+    abstract fun getDates(value: Int): List<Long>
+
 }
