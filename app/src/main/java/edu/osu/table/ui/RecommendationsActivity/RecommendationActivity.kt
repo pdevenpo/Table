@@ -93,23 +93,16 @@ class RecommendationActivity : AppCompatActivity() {
     fun battery_usage ()
     {
         mDb_wireless = WirelessDatabase.getInstance(this.applicationContext)
-        val wirelessDao = mDb_wireless?.wirelessDataDao()
-        val scanDao = mDb_scan?.scanDataDao()
+        //val wirelessDao = mDb_wireless?.wirelessDataDao()
+        //val scanDao = mDb_scan?.scanDataDao()
 
         var batt_delta: MutableList<Float> = mutableListOf()
         var batt_delta_filter: MutableList<Float> = mutableListOf()
         var temp_var:Float = (0.0).toFloat()
 
-        var wirelessData = listOf(WirelessData())
+        //val wirelessData = listOf(WirelessData())
 
-        wirelessData = mDb_wireless?.wirelessDataDao()?.getAllBattery(96)!!
-
-        if (wirelessData.size >= 2) {
-            for (i in 0..(wirelessData.size-2)) {
-                temp_var = wirelessData.get(i).BatteryPerc - wirelessData.get(i+1).BatteryPerc
-                batt_delta.add(temp_var)
-            }
-        }
+        val wirelessData = mDb_wireless?.wirelessDataDao()?.getAllBattery(96)
 
         val datelist = mDb_wireless?.wirelessDataDao()?.getDates(96)
 
@@ -120,20 +113,33 @@ class RecommendationActivity : AppCompatActivity() {
         var date_string: MutableList<String> = mutableListOf()
         var final_string: MutableList<String> = mutableListOf()
 
-        if(wirelessData.size >=1){
-            for (i in 0..(wirelessData.size-1)){
-                date_temp = Date(datelist!!.get(i))
-                if (i >= 1){
-                    if (batt_delta.get(i-1) >= 0.05) {
-                        batt_delta_filter.add(batt_delta.get(i-1))
-                        date_string.add(format_date.format(date_temp))
-                        final_string.add("On " + format_date.format(date_temp) + " your battery drain was "
-                                + DecimalFormat("##.##").format(batt_delta.get(i-1)*400) + "% per hour." +
-                                " Consider reducing your use activity and connecting to a better wireless connection.")
-                    }
+        var size_db = 0
+        if (wirelessData != null) {
+            size_db = wirelessData?.size
+
+
+            if (size_db >= 2) {
+                for (i in 0..(size_db - 2)) {
+                    temp_var = wirelessData.get(i).BatteryPerc - wirelessData.get(i + 1).BatteryPerc
+                    batt_delta.add(temp_var)
                 }
+            }
+
+            if(size_db >=1){
+                for (i in 0..(wirelessData.size-1)){
+                    date_temp = Date(datelist!!.get(i))
+                    if (i >= 1){
+                        if (batt_delta.get(i-1) >= 0.05) {
+                            batt_delta_filter.add(batt_delta.get(i-1))
+                            date_string.add(format_date.format(date_temp))
+                            final_string.add("On " + format_date.format(date_temp) + " your battery drain was "
+                                    + DecimalFormat("##.##").format(batt_delta.get(i-1)*400) + "% per hour." +
+                                    " Consider reducing your use activity and connecting to a better wireless connection.")
+                        }
+                    }
 
 
+                }
             }
         }
 
