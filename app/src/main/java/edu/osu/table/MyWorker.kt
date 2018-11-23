@@ -1,30 +1,24 @@
 package edu.osu.table
 
-import android.content.ContentValues
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.Manifest
+import android.content.*
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.ConnectivityManager
+import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
-import android.os.AsyncTask
 import android.os.BatteryManager
 import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import edu.osu.table.ui.ScanActivity.ScanDatabase
-import edu.osu.table.ui.WirelessData.WirelessData
-import edu.osu.table.ui.WirelessData.WirelessDatabase
+import edu.osu.table.ui.WirelessDataFolder.WirelessData
+import edu.osu.table.ui.WirelessDataFolder.WirelessDatabase
 import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import java.time.LocalTime
 import java.text.DecimalFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import android.widget.Toast;
 import edu.osu.table.ui.ScanActivity.ScanData
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -33,6 +27,15 @@ import okio.Okio
 import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
+import android.os.Handler
+import android.os.Looper
+import android.support.v4.content.ContextCompat
+import edu.osu.table.ui.WirelessDataFolder.WiFiScan
+//import edu.osu.table.ui.WirelessDataOptions.WirelessDataOptions
+import edu.osu.table.ui.WirelessScan.Wireless2Data
+import edu.osu.table.ui.WirelessScan.Wireless2Database
+import java.lang.Thread.sleep
+
 
 //import com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table
 
@@ -87,6 +90,96 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
             // Final Insert to Database
             wirelessDao?.insert(wirelessData)
 
+            // Mike's Third Attempt at WiFi Scan - https://stackoverflow.com/questions/49182661/get-wifi-scan-results-list-with-kotlin
+
+            var resultList = ArrayList<ScanResult>()
+            //lateinit var wifiManager: WifiManager
+
+            var mWireless2Database: Wireless2Database? = null
+
+            mWireless2Database = Wireless2Database.getInstance(this.applicationContext)
+            val wireless2Dao = mWireless2Database?.wireless2DataDao()
+            //val scanDao = mDb_scan?.wirelessDaoOptions()
+
+            //wifiManager = this.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+
+            val broadcastReceiver = object : BroadcastReceiver() {
+                override fun onReceive(contxt: Context?, intent: Intent?) {
+                    resultList = wifiManager.scanResults as ArrayList<ScanResult>
+                    Log.d("TESTING", "onReceive Called")
+                    Log.d("WiFi", resultList.size.toString())
+                    Log.d("ScanResults", wifiManager.scanResults.toString())
+                }
+            }
+            fun stopScanning() {
+                this.applicationContext.unregisterReceiver(broadcastReceiver)
+                var wireless2Data = Wireless2Data()
+                var current_time = System.currentTimeMillis()
+                //val axisList = ArrayList<Axis>()
+                for (result in resultList) {
+                    wireless2Data.CurDate = current_time
+                    wireless2Data.SSID = result.SSID
+                    wireless2Data.RSSdBm = result.level
+                    wireless2Data.MAC_Address = result.BSSID
+                    //wireless2Data.ThroughputMpbs = result.frequency
+                    wireless2Dao?.insert(wireless2Data)
+                }
+            }
+            fun startScanning() {
+                this.applicationContext.registerReceiver(broadcastReceiver, IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION))
+                var a = wifiManager.startScan()
+                Log.d("ScanSuccess", a.toString())
+                Log.d("Permissions", (ContextCompat.checkSelfPermission(this.applicationContext,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED).toString())
+                //val loop = Looper.prepare()
+                /*Handler().postDelayed({
+                    stopScanning()
+                }, 10000)*/
+            }
+
+            //wifiManager.createWifiLock("lock_tag")
+            startScanning()
+            sleep(2000)
+            stopScanning()
+
+            // Mike's Second Attempt at WiFi Scan
+            //Looper.prepare()
+            //WiFiScan()
+
+
+            // Mike's Attempt at WiFi Scan
+            /*
+            var resultList = ArrayList<ScanResult>()
+            //lateinit var wifiManager: WifiManager
+
+            /*val broadcastReceiver = object : BroadcastReceiver() {
+                override fun onReceive(contxt: Context?, intent: Intent?) {
+                    resultList = wifiManager.scanResults as ArrayList<ScanResult>
+                    Log.d("TESTING", "onReceive Called")
+                }
+            }*/
+
+            //this.applicationContext.registerReceiver(broadcastReceiver, IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION))
+            val scanres = wifiManager.startScan()
+
+            val scanprogress = WifiManager.SCAN_RESULTS_AVAILABLE_ACTION
+
+            Handler().postDelayed({
+                resultList = wifiManager.scanResults as ArrayList<ScanResult>
+            }, 10000)
+            //sleep(2000)
+
+            //this.applicationContext.unregisterReceiver(broadcastReceiver)
+            var wireless2Data = Wireless2Data()
+            var current_time = System.currentTimeMillis()
+
+            for (result in resultList) {
+                wireless2Data.CurDate = current_time
+                wireless2Data.SSID = result.SSID
+            }
+
+
             //-----------------------------ScanResults-------------------------------------
             //TODO Store in Database
             val lWifiManager = this.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -103,10 +196,12 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
                 //scanData. = lScanResult.level;
                 scanData.ChanFreq =  lScanResult.frequency.toDouble()
                 //scanData.ChanFreq = frequency.toDouble()
+                scanDao?.insert(scanData)
 
             }
-            scanDao?.insert(scanData)
+
             //----------------------------endScanResults-------------------------------------
+            */
             Result.SUCCESS
         } catch (throwable: Throwable) {
             Log.e(ContentValues.TAG, "Error: Fault in Worker Task", throwable)
@@ -114,7 +209,7 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
         }
     }
 
-    // Mike's Updated Throughput Function
+    // Mike's Updated Throughput Function - https://code.luasoftware.com/tutorials/android/android-download-file-using-okhttp/
     private fun getThroughput_v2(): Double {
         val dir = applicationContext.cacheDir
         val fileExt = null

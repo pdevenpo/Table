@@ -1,4 +1,4 @@
-package edu.osu.table.ui.WirelessData;
+package edu.osu.table.ui.WirelessDataFolder;
 
 import android.net.TrafficStats;
 import android.os.Handler;

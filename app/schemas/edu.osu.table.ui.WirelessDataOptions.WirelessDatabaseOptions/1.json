@@ -1,0 +1,75 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "a2b79c483b7ad73d82e2c0d8f4f6acd2",
+    "entities": [
+      {
+        "tableName": "wirelessDataOptions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `date` INTEGER NOT NULL, `ssid` TEXT NOT NULL, `mac_address` TEXT NOT NULL, `rss_dbm` INTEGER NOT NULL, `thoughput_Mbps` REAL NOT NULL, `linkspeed` INTEGER NOT NULL, `battery_percentage` REAL NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "CurDate",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "SSID",
+            "columnName": "ssid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "MAC_Address",
+            "columnName": "mac_address",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "RSSdBm",
+            "columnName": "rss_dbm",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ThroughputMpbs",
+            "columnName": "thoughput_Mbps",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "LinkSpeed",
+            "columnName": "linkspeed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "BatteryPerc",
+            "columnName": "battery_percentage",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"a2b79c483b7ad73d82e2c0d8f4f6acd2\")"
+    ]
+  }
+}

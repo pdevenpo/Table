@@ -32,7 +32,7 @@
             <service android:name=".MyBatteryIntentService"
                  android:exported="false"></service>
         -->
-        <activity android:name=".ui.WirelessData.WifiActivity">
+        <activity android:name=".ui.WirelessDataFolder.WifiActivity">
         </activity>
     </application>
 

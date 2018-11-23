@@ -1,9 +1,8 @@
-package edu.osu.table.ui.WirelessData
+package edu.osu.table.ui.WirelessDataFolder
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
-import java.util.*
 
 @Entity(tableName = "wirelessData")
 data class WirelessData(@PrimaryKey(autoGenerate = true) var id: Long?,

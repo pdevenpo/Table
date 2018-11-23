@@ -1,4 +1,4 @@
-package edu.osu.table.ui.WirelessData
+package edu.osu.table.ui.WirelessDataFolder
 
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
@@ -19,7 +19,6 @@ interface WirelessDao {
 
     @Insert(onConflict = REPLACE)
     fun insert(wirelessData: WirelessData)
-
 
     @Query("DELETE from wirelessData")
     fun deleteAll()

@@ -5,43 +5,17 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
 import edu.osu.table.MainActivity
 import edu.osu.table.R
-import android.widget.Toast
-import com.google.common.io.Flushables.flush
-import java.nio.file.Files.exists
-import java.io.File.separator
-import android.os.Environment.getExternalStorageDirectory
-import android.app.ProgressDialog
-import android.content.Context
-import android.net.Uri
 //import edu.osu.table.MainActivity
-import android.os.AsyncTask
-import android.os.Build
-import android.os.Environment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
-import android.webkit.MimeTypeMap
-import androidx.annotation.RequiresApi
 import edu.osu.table.ui.ScanActivity.ScanDatabase
-import edu.osu.table.ui.WirelessData.WirelessData
-import edu.osu.table.ui.WirelessData.WirelessDatabase
+import edu.osu.table.ui.WirelessDataFolder.WirelessDatabase
 import kotlinx.android.synthetic.main.recommendation_activity.*
-import okhttp3.Cache
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okio.Okio
-import java.io.*
-import java.net.URL
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 class RecommendationActivity : AppCompatActivity() {
@@ -60,6 +34,7 @@ class RecommendationActivity : AppCompatActivity() {
         recycle_rec.layoutManager = LinearLayoutManager(this)
 
         battery_usage()
+
 
     }
 

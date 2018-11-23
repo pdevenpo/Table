@@ -1,0 +1,67 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "8eb76f1e3e5b3ba59a955a0754f288aa",
+    "entities": [
+      {
+        "tableName": "Wireless2Data",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`mDatabase` TEXT, `mCallbacks` TEXT, `mOpenHelper` TEXT, `mInvalidationTracker` TEXT, `mAllowMainThreadQueries` INTEGER NOT NULL, `mWriteAheadLoggingEnabled` INTEGER NOT NULL, `mCloseLock` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "mDatabase",
+            "columnName": "mDatabase",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mCallbacks",
+            "columnName": "mCallbacks",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mOpenHelper",
+            "columnName": "mOpenHelper",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mInvalidationTracker",
+            "columnName": "mInvalidationTracker",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mAllowMainThreadQueries",
+            "columnName": "mAllowMainThreadQueries",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mWriteAheadLoggingEnabled",
+            "columnName": "mWriteAheadLoggingEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mCloseLock",
+            "columnName": "mCloseLock",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"8eb76f1e3e5b3ba59a955a0754f288aa\")"
+    ]
+  }
+}

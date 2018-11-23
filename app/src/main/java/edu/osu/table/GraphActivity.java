@@ -29,11 +29,9 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-import edu.osu.table.ui.WirelessData.WirelessDao;
-import edu.osu.table.ui.WirelessData.WirelessData;
-import edu.osu.table.ui.WirelessData.WirelessDatabase;
+import edu.osu.table.ui.WirelessDataFolder.WirelessData;
+import edu.osu.table.ui.WirelessDataFolder.WirelessDatabase;
 import edu.osu.table.ui.graph.HourAxisValueFormatter;
-import edu.osu.table.ui.graph.MyMarkerView;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
