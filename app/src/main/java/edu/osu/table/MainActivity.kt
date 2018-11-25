@@ -128,11 +128,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(myIntent)
     }
 
-    //Allow cardview click to go to settings activity
-    fun onClickListenerSettings(v: View) {
-        val myIntent = Intent(baseContext, Settings::class.java)
-        startActivity(myIntent)
-    }
+
 
     //Allow cardview click to view battery history
     fun onClickListenerGraph(v: View) {

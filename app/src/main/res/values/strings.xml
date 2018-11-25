@@ -8,8 +8,8 @@
     <string name="scan_descriptor">Scan for nearby WiFi to find a better connection.</string>
     <string name="scan_text">Scan</string>
     <!-- Welcome -->
-    <string name="welcome_button">Welcome!</string>
-    <string name="welcome_descriptor">TABLE will help you save battery while fixing your connection.</string>
+    <string name="welcome_button">TABLE</string>
+    <string name="welcome_descriptor">TABLE is here to help you have a better Connection and longer Battery life.</string>
     <!-- Recommendations -->
     <string name="recommendation_button">Tips</string>
     <string name="recommendation_descriptor">Click here to view recommendations made by TABLE.</string>
