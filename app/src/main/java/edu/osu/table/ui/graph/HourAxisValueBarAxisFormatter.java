@@ -6,19 +6,18 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
-/**
- * Created by Yasir on 02/06/16.
- */
-public class HourAxisValueFormatter implements IAxisValueFormatter
+
+public class HourAxisValueBarAxisFormatter implements IAxisValueFormatter
 {
 
-    private long referenceTimestamp; // minimum timestamp in your data set
+    private List<Long> referenceTimestamp; // minimum timestamp in your data set
     private DateFormat mDataFormat;
     private Date mDate;
 
-    public HourAxisValueFormatter(long referenceTimestamp) {
+    public HourAxisValueBarAxisFormatter(List<Long> referenceTimestamp) {
         this.referenceTimestamp = referenceTimestamp;
         this.mDataFormat = new SimpleDateFormat("HH:mm a", Locale.ENGLISH);
         this.mDate = new Date();
@@ -36,12 +35,11 @@ public class HourAxisValueFormatter implements IAxisValueFormatter
      */
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
-        // convertedTimestamp =
-        // originalTimestamp - referenceTimestamp
+        // convertedTimestamp = originalTimestamp - referenceTimestamp
         long convertedTimestamp = (long) value;
 
         // Retrieve original timestamp
-        long originalTimestamp = referenceTimestamp + convertedTimestamp;
+        long originalTimestamp = referenceTimestamp.get((int)value);
 
         // Convert timestamp to hour:minute
         return getHour(originalTimestamp);

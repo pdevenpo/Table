@@ -13,10 +13,15 @@ import com.jjoe64.graphview.GraphView
 import com.jjoe64.graphview.series.DataPoint
 import java.util.concurrent.TimeUnit
 import androidx.work.*
+import com.github.mikephil.charting.charts.LineChart
 import edu.osu.table.ui.ScanActivity.WifiScanActivity
 import edu.osu.table.ui.SettingsActivity.Settings
 import edu.osu.table.ui.RecommendationsActivity.RecommendationActivity
 import edu.osu.table.ui.WirelessDataFolder.WifiActivity
+import edu.osu.table.ui.WirelessDataFolder.WirelessData
+import edu.osu.table.ui.WirelessDataFolder.WirelessDatabase
+import edu.osu.table.ui.graph.GraphMainActivityChart
+import java.util.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
@@ -35,12 +40,15 @@ class MainActivity : AppCompatActivity() {
 
         //TODO make a non-static graph
         //Graph Generation Main Activity
-        val graph = findViewById<View>(R.id.graph) as GraphView
-        val series = LineGraphSeries<DataPoint>(arrayOf<DataPoint>(DataPoint(1.0, 1.0), DataPoint(1.0, 5.0), DataPoint(2.0, 3.0), DataPoint(3.0, 2.0), DataPoint(4.0, 6.0)))
-        graph.addSeries(series)
-        //has to be in java, no kotlin support
-        graph.title = "Battery Consumption"
+        val graph = findViewById<View>(R.id.battery_main_graph) as LineChart
+        var alldbdata: List<WirelessData>? = ArrayList()
+        var wirelessDatabase: WirelessDatabase? = null
+        wirelessDatabase = WirelessDatabase.getInstance(this.applicationContext)
 
+        alldbdata = wirelessDatabase?.wirelessDataDao()?.getAllBattery(500)        //has to be in java, no kotlin support
+        var newChart: GraphMainActivityChart
+        newChart = GraphMainActivityChart(this, graph, alldbdata)
+        newChart.setupNewBatteryChart()
         //mp = MediaPlayer.create(this, R.raw.desperate_man)
         //mp.start()
 

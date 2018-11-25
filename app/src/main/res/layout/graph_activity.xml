@@ -24,6 +24,15 @@
                 android:theme="?attr/actionBarTheme"
                 app:title="TABLE"
         />
+        <TextView
+                android:text="@string/text_pie_graphs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_pie_graphs"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:contentDescription="@string/text_pie_graphs"/>
+
         <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/battery_pie_chart_discharge"
                 android:layout_width="373dp"
@@ -41,6 +50,15 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="10dp">
         </com.github.mikephil.charting.charts.PieChart>
+
+        <TextView
+                android:text="@string/text_battery_line_graphs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_battery_line_graphs"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:contentDescription="@string/text_battery_line_graphs"/>
 
         <com.github.mikephil.charting.charts.LineChart
                 android:layout_width="373dp"
@@ -65,10 +83,118 @@
                 android:layout_marginTop="10dp">
         </com.github.mikephil.charting.charts.LineChart>
 
+        <TextView
+                android:text="@string/text_overall_battery_line_graph"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_overall_battery_line_graphs"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:contentDescription="@string/text_overall_battery_line_graph"/>
+
         <com.github.mikephil.charting.charts.LineChart
                 android:layout_width="373dp"
                 android:layout_height="246dp"
                 android:id="@+id/battery_new_graph"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp">
+        </com.github.mikephil.charting.charts.LineChart>
+
+        <TextView
+                android:text="@string/text_RSSI_bar_line_graphs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_RSSI_bar_line_graphs"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:contentDescription="@string/text_RSSI_bar_line_graphs"/>
+
+        <com.github.mikephil.charting.charts.BarChart
+                android:layout_width="373dp"
+                android:layout_height="246dp"
+                android:id="@+id/wifi_per_ap_bar_graph1"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp">
+        </com.github.mikephil.charting.charts.BarChart>
+
+        <com.github.mikephil.charting.charts.LineChart
+                android:layout_width="373dp"
+                android:layout_height="246dp"
+                android:id="@+id/wifi_speed_per_ap_line_graph1"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp">
+        </com.github.mikephil.charting.charts.LineChart>
+
+        <com.github.mikephil.charting.charts.BarChart
+                android:layout_width="373dp"
+                android:layout_height="246dp"
+                android:id="@+id/wifi_per_ap_bar_graph2"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp">
+        </com.github.mikephil.charting.charts.BarChart>
+
+        <com.github.mikephil.charting.charts.LineChart
+                android:layout_width="373dp"
+                android:layout_height="246dp"
+                android:id="@+id/wifi_speed_per_ap_line_graph2"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp">
+        </com.github.mikephil.charting.charts.LineChart>
+
+        <com.github.mikephil.charting.charts.BarChart
+                android:layout_width="373dp"
+                android:layout_height="246dp"
+                android:id="@+id/wifi_per_ap_bar_graph3"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp">
+        </com.github.mikephil.charting.charts.BarChart>
+
+        <com.github.mikephil.charting.charts.LineChart
+                android:layout_width="373dp"
+                android:layout_height="246dp"
+                android:id="@+id/wifi_speed_per_ap_line_graph3"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp">
+        </com.github.mikephil.charting.charts.LineChart>
+
+        <TextView
+                android:text="@string/text_current_scan_rssi_graphs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_current_scan_rssi_graphs"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:contentDescription="@string/text_current_scan_rssi_graphs"/>
+
+        <com.github.mikephil.charting.charts.BarChart
+                android:layout_width="373dp"
+                android:layout_height="246dp"
+                android:id="@+id/wifi_ap_bar_graph"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp">
+        </com.github.mikephil.charting.charts.BarChart>
+
+        <TextView
+                android:text="@string/string_current_wifi_metric"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_current_wifi_metric"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:contentDescription="@string/string_current_wifi_metric"/>
+
+        <com.github.mikephil.charting.charts.BarChart
+                android:layout_width="373dp"
+                android:layout_height="246dp"
+                android:id="@+id/current_wifi_ap_rssi_bar_graph"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp">
+        </com.github.mikephil.charting.charts.BarChart>
+
+        <com.github.mikephil.charting.charts.LineChart
+                android:layout_width="373dp"
+                android:layout_height="246dp"
+                android:id="@+id/current_wifi_ap_link_speed_bar_graph"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="10dp">
         </com.github.mikephil.charting.charts.LineChart>
