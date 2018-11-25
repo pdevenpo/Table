@@ -121,6 +121,23 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
                     wireless2Data.SSID = result.SSID
                     wireless2Data.RSSdBm = result.level
                     wireless2Data.MAC_Address = result.BSSID
+                    if (result.level < -81)
+                        wireless2Data.LinkSpeed = 0
+                    else if (result.level < -80)
+                        wireless2Data.LinkSpeed = 6
+                    else if (result.level < -78)
+                        wireless2Data.LinkSpeed = 9
+                    else if (result.level < -76)
+                        wireless2Data.LinkSpeed = 12
+                    else if (result.level < -73)
+                        wireless2Data.LinkSpeed = 18
+                    else if (result.level < -69)
+                        wireless2Data.LinkSpeed = 24
+                    else if (result.level < -65)
+                        wireless2Data.LinkSpeed = 36
+                    else
+                        wireless2Data.LinkSpeed = 48
+
                     //wireless2Data.ThroughputMpbs = result.frequency
                     wireless2Dao?.insert(wireless2Data)
                 }
