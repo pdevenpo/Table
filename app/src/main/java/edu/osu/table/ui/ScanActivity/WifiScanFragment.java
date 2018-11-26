@@ -151,26 +151,49 @@ public class WifiScanFragment extends Fragment {
             //TODO force a wifi connection based on BSSID
             @Override
             public void onClick(View view) {
-                WifiConfiguration config = new WifiConfiguration();
-                config.allowedAuthAlgorithms.clear();
-                config.allowedGroupCiphers.clear();
-                config.allowedKeyManagement.clear();
-                config.allowedPairwiseCiphers.clear();
-                config.allowedProtocols.clear();
-                config.SSID = "\"" + bestSSID + "\"";
-                config.BSSID = bestBSSID; // <--BSSID should be set without ->"<-
-                List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();
-                for (WifiConfiguration existingConfig : existingConfigs) {
-                    if (null != existingConfig && existingConfig.SSID.toString().equals("\"" + "osuwireless" + "\"")) {
-                        mWifiManager.removeNetwork(existingConfig.networkId);
+                if (mWifiManager.isWifiEnabled()) {
+                    WifiConfiguration config = new WifiConfiguration();
+                    config.allowedAuthAlgorithms.clear();
+                    config.allowedGroupCiphers.clear();
+                    config.allowedKeyManagement.clear();
+                    config.allowedPairwiseCiphers.clear();
+                    config.allowedProtocols.clear();
+                    config.SSID = "\"" + bestSSID + "\"";
+                    config.BSSID = bestBSSID; // <--BSSID should be set without ->"<-
+                    List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();
+                    for (WifiConfiguration existingConfig : existingConfigs) {
+                        if (null != existingConfig && existingConfig.SSID.toString().equals("\"" + "osuwireless" + "\"")) {
+                            mWifiManager.removeNetwork(existingConfig.networkId);
+                        }
                     }
-                }
-                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-                int wcgID = mWifiManager.addNetwork(config);
-                boolean b = mWifiManager.enableNetwork(wcgID, true);
-                Snackbar mySnackbar2 = Snackbar.make(t, "Please wait as your device re-connects.", Snackbar.LENGTH_LONG);
-                mySnackbar2.show();
+                    config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                    int wcgID = mWifiManager.addNetwork(config);
+                    boolean b = mWifiManager.enableNetwork(wcgID, true);
+                    Snackbar mySnackbar2 = Snackbar.make(t, "Please wait as your device re-connects.", Snackbar.LENGTH_LONG);
+                    mySnackbar2.show();
 
+                }else{
+                    mWifiManager.setWifiEnabled(true);
+                    WifiConfiguration config = new WifiConfiguration();
+                    config.allowedAuthAlgorithms.clear();
+                    config.allowedGroupCiphers.clear();
+                    config.allowedKeyManagement.clear();
+                    config.allowedPairwiseCiphers.clear();
+                    config.allowedProtocols.clear();
+                    config.SSID = "\"" + bestSSID + "\"";
+                    config.BSSID = bestBSSID; // <--BSSID should be set without ->"<-
+                    List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();
+                    for (WifiConfiguration existingConfig : existingConfigs) {
+                        if (null != existingConfig && existingConfig.SSID.toString().equals("\"" + "osuwireless" + "\"")) {
+                            mWifiManager.removeNetwork(existingConfig.networkId);
+                        }
+                    }
+                    config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                    int wcgID = mWifiManager.addNetwork(config);
+                    boolean b = mWifiManager.enableNetwork(wcgID, true);
+                    Snackbar mySnackbar2 = Snackbar.make(t, "Please wait as your device re-connects.", Snackbar.LENGTH_LONG);
+                    mySnackbar2.show();
+                }
             }
         });
         //Initialize the action bar
@@ -193,6 +216,8 @@ public class WifiScanFragment extends Fragment {
         wifi_button_5G.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Snackbar mySnackbar3 = Snackbar.make(t, "Please wait as we conduct a download speed test.", Snackbar.LENGTH_LONG);
+                mySnackbar3.show();
                 new Thread(new Runnable() {
 
                     @Override
