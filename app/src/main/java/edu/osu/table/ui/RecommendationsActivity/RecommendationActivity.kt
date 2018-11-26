@@ -41,7 +41,7 @@ class RecommendationActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.menu_onlyback, menu)
         return true
     }
 
@@ -55,9 +55,9 @@ class RecommendationActivity : AppCompatActivity() {
         }
 
         //TODO make a navigation drawer open as result of click
-        R.id.action_menu -> {
+        /*R.id.action_menu -> {
             true
-        }
+        }*/
 
         else -> {
             // If we got here, the user's action was not recognized.
