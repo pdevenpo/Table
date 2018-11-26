@@ -69,7 +69,7 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
             wirelessData.SSID = "4G-LTE"  // Default if no WiFi
 
             // Only record WiFi Data in Database if Connected
-            if( info.linkSpeed != -1) {
+            if( info.linkSpeed != -1 && info.bssid != null && info.ssid != null ) {
                 wirelessData.SSID = info.ssid
                 wirelessData.MAC_Address = info.bssid
                 wirelessData.RSSdBm = info.rssi
