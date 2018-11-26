@@ -68,7 +68,7 @@ class RecommendationActivity : AppCompatActivity() {
 
     fun battery_usage ()
     {
-        val delta_battery = 0.15/4 // Battery Drop 15% Per Hour
+        val delta_battery = 0.10 // Battery Drop 10% Per Hour
         mDb_wireless = WirelessDatabase.getInstance(this.applicationContext)
         mDb_avail_wireless = Wireless2Database.getInstance(this.applicationContext)
 
@@ -76,6 +76,7 @@ class RecommendationActivity : AppCompatActivity() {
         var temp_long:Long
         var date_temp:Date
         var temp_int:Int = -1000
+        var temp_double:Double = 1000.0
         var size_db = 0
 
         var wirelessData = mDb_wireless?.wirelessDataDao()?.getAllBattery(96)
@@ -104,11 +105,11 @@ class RecommendationActivity : AppCompatActivity() {
                     date_temp = Date(wirelessData.get(i).CurDate)
 
                     // High Draw on Battery
-                    if (temp_float >= delta_battery) {
+                    if (-(temp_float.toDouble())/(temp_long.toDouble()) * (1000.0*60.0*60.0) >= delta_battery) {
                         batt_delta_filter.add(temp_float)
                         date_string.add(format_date.format(date_temp))
                         final_string.add("On " + format_date.format(date_temp) + " your battery drain was "
-                                + DecimalFormat("##.##").format(temp_float*400*temp_long/1000/60/60) + "% per hour." +
+                                + DecimalFormat("##.##").format(-(temp_float.toDouble())*100.0/(temp_long.toDouble()) * (1000.0*60.0*60.0)) + "% per hour." +
                                 " Consider reducing your use activity and connecting to a better wireless connection.")
                     }
 
@@ -124,10 +125,15 @@ class RecommendationActivity : AppCompatActivity() {
                         final_string.add("On " + format_date.format(date_temp) + " you were connected to " +
                         wirelessData.get(i).SSID + ", however " + wireless2Data!!.get(0).SSID + " may provide higher throughtput.")
                     }
-                    if (temp_float > 3) {
-                        // Something
+
+                    // Poor Throughput
+                    temp_double = wirelessData.get(i).ThroughputMpbs
+                    if((temp_double < 5) && (wirelessData.get(i).SSID != "4G-LTE")) {
+                        final_string.add("On " + format_date.format(date_temp) + " you were connected to " +
+                        wirelessData.get(i).SSID + ", however your throughput was well below average at " +
+                        DecimalFormat("##.##").format(wirelessData.get(i).ThroughputMpbs) +
+                        "Mbps. Consider switching networks or moving to LTE.")
                     }
-                        // Something
 
 
                     /*
