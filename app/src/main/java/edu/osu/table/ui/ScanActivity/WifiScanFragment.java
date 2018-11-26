@@ -1,6 +1,7 @@
 package edu.osu.table.ui.ScanActivity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.arch.persistence.room.Room;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -69,7 +70,7 @@ public class WifiScanFragment extends Fragment {
 
     private TextView pingtime;
     private TextView speed;
-
+    Activity activity;
     private long l, total;
     private Handler handler = new Handler();
     private TextView download_speed;
@@ -94,7 +95,6 @@ public class WifiScanFragment extends Fragment {
     public String bestSSID = "";
 
 
-
     /*
      * ************************************************************************
      * Declare a Broadcast Receiver that "responds" to Android system Intents.
@@ -103,19 +103,16 @@ public class WifiScanFragment extends Fragment {
      * the scan is completed).
      * ************************************************************************
      */
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver()
-    {
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         // Override onReceive() method to implement our custom logic.
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
+        public void onReceive(Context context, Intent intent) {
             // Get the Intent action.
             String action = intent.getAction();
             // If the WiFi scan results are ready, iterate through them and
             // record the WiFi APs' SSIDs, BSSIDs, WiFi capabilities, radio
             // frequency, and signal strength (in dBm).
-            if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(action))
-            {
+            if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(action)) {
                 // Ensure WifiManager is not null first.
                 if (mWifiManager == null) {
                     setupWifi();
@@ -132,8 +129,8 @@ public class WifiScanFragment extends Fragment {
     /**
      * Inflate the Fragment view for Wi-Fi scans.
      *
-     * @param inflater LayoutInflater that inflates XML view
-     * @param container The parent view container
+     * @param inflater           LayoutInflater that inflates XML view
+     * @param container          The parent view container
      * @param savedInstanceState Any previous saved state
      * @return Created Fragment
      */
@@ -149,35 +146,33 @@ public class WifiScanFragment extends Fragment {
         //onclick listener for wifi_button to connect to a new wifi
         Button wifi_button_5G = (Button) v.findViewById(R.id.connect_wifi_5G);
         wifi_button.setOnClickListener(new View.OnClickListener() {
-                                            //-54 is a better signal than -80 dbm
-                                            //2.4 or 5.5 better freq?
-                                            //TODO force a wifi connection based on BSSID
-                                           @Override
-                                           public void onClick(View view) {
-                                               WifiConfiguration config = new WifiConfiguration();
-                                               config.allowedAuthAlgorithms.clear();
-                                               config.allowedGroupCiphers.clear();
-                                               config.allowedKeyManagement.clear();
-                                               config.allowedPairwiseCiphers.clear();
-                                               config.allowedProtocols.clear();
-                                               config.SSID = "\"" + bestSSID + "\"";
-                                               config.BSSID = bestBSSID; // <--BSSID should be set without ->"<-
-                                               List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();
-                                               for (WifiConfiguration existingConfig : existingConfigs)
-                                               {
-                                                   if (null != existingConfig && existingConfig.SSID.toString().equals("\"" + "osuwireless" + "\""))
-                                                   {
-                                                       mWifiManager.removeNetwork(existingConfig.networkId);
-                                                   }
-                                               }
-                                               config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-                                               int wcgID = mWifiManager.addNetwork(config);
-                                               boolean b =  mWifiManager.enableNetwork(wcgID, true);
-                                               Snackbar mySnackbar2 = Snackbar.make(t, "Please wait as your device re-connects.", Snackbar.LENGTH_LONG);
-                                               mySnackbar2.show();
+            //-54 is a better signal than -80 dbm
+            //2.4 or 5.5 better freq?
+            //TODO force a wifi connection based on BSSID
+            @Override
+            public void onClick(View view) {
+                WifiConfiguration config = new WifiConfiguration();
+                config.allowedAuthAlgorithms.clear();
+                config.allowedGroupCiphers.clear();
+                config.allowedKeyManagement.clear();
+                config.allowedPairwiseCiphers.clear();
+                config.allowedProtocols.clear();
+                config.SSID = "\"" + bestSSID + "\"";
+                config.BSSID = bestBSSID; // <--BSSID should be set without ->"<-
+                List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();
+                for (WifiConfiguration existingConfig : existingConfigs) {
+                    if (null != existingConfig && existingConfig.SSID.toString().equals("\"" + "osuwireless" + "\"")) {
+                        mWifiManager.removeNetwork(existingConfig.networkId);
+                    }
+                }
+                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                int wcgID = mWifiManager.addNetwork(config);
+                boolean b = mWifiManager.enableNetwork(wcgID, true);
+                Snackbar mySnackbar2 = Snackbar.make(t, "Please wait as your device re-connects.", Snackbar.LENGTH_LONG);
+                mySnackbar2.show();
 
-                                           }
-                                       });
+            }
+        });
         //Initialize the action bar
         setHasOptionsMenu(true);
         //Initialize the recycler view
@@ -202,9 +197,8 @@ public class WifiScanFragment extends Fragment {
 
                     @Override
                     public void run() {
-
                         float rate = download();
-                        rate = (float) rate/1000;
+                        rate = (float) rate / 1000;
                         final String rate1 = Float.toString(rate);
 
                         getActivity().runOnUiThread(new Runnable() {
@@ -212,14 +206,11 @@ public class WifiScanFragment extends Fragment {
                             public void run() {
                                 Snackbar mySnackbar = Snackbar.make(t, "Your current download speeds are: " + rate1 + "Mbps.", Snackbar.LENGTH_LONG);
                                 mySnackbar.show();
-
                             }
                         });
                     }
 
                 }).start();
-
-
             }
         });
 
@@ -273,8 +264,7 @@ public class WifiScanFragment extends Fragment {
                 Log.d(TAG, "Request Wi-Fi scan");
                 if (!hasLocationPermission()) {
                     requestLocationPermission();
-                }
-                else {
+                } else {
                     doWifiScan();
                 }
                 return true;
@@ -293,8 +283,7 @@ public class WifiScanFragment extends Fragment {
         if (requestCode == PERMISSION_REQUEST_LOCATION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 doWifiScan();
-            }
-            else {
+            } else {
                 Log.e(TAG, "Error: Permission denied to read location");
                 Toast.makeText(getActivity(), getResources().getString(R.string.read_location_permission_denied), Toast.LENGTH_SHORT).show();
             }
@@ -359,7 +348,7 @@ public class WifiScanFragment extends Fragment {
             ScanData scanData = new ScanData();
             //set wirelessdata to all the wifi information
             //int j = GetBatteryPercentage.getBatteryPercentage();
-            if(mScanResult.level > bestDBM){
+            if (mScanResult.level > bestDBM) {
                 bestDBM = mScanResult.level;
                 bestBSSID = mScanResult.BSSID;
                 bestSSID = mScanResult.SSID;
@@ -380,12 +369,13 @@ public class WifiScanFragment extends Fragment {
                     "BSSID: " + mScanResult.BSSID + "; " + '\n' +
                     "SECURITY: " + mScanResult.capabilities + "; " + '\n' +
                     "FREQUENCY: " + mScanResult.frequency + " MHz;" + '\n' +
-                    "NOISE: " + mScanResult.level + " dBm";
+                    "RSS: " + mScanResult.level + " dBm";
             wifiID++;
-            if(mScanResult.capabilities.contains("WPA")) {
-                    mScanResultTextView.setTextColor(getResources().getColor(R.color.darkPrimaryColor));
-                    mScanResultTextView.setText(resultTextStr);
-            }else{
+            if (mScanResult.capabilities.contains("WPA")) {
+                mScanResultTextView.setTextColor(getResources().getColor(R.color.dividerColor));
+                mScanResultTextView.setText(resultTextStr);
+            } else {
+                mScanResultTextView.setTextColor(getResources().getColor(R.color.white));
                 mScanResultTextView.setText(resultTextStr);
             }
 
@@ -403,9 +393,12 @@ public class WifiScanFragment extends Fragment {
         @Override
         public ScanResultHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-
+            //View view = LayoutInflater.from(activity).inflate(R.layout.item_layout, parent, false);
+            //return new ScanResultHolder(view);
+            //return null;
             return new ScanResultHolder(layoutInflater, parent);
         }
+
 
         @Override
         public void onBindViewHolder(ScanResultHolder holder, int position) {
@@ -419,7 +412,7 @@ public class WifiScanFragment extends Fragment {
         }
     }
 
-    public static float getdelay(){
+    public static float getdelay() {
 
         String result = null;
         float value = 0;
@@ -439,7 +432,7 @@ public class WifiScanFragment extends Fragment {
             String time[] = arr[3].split(" ");
 
 
-            Log.i("Throughput","time=" + time[0]);
+            Log.i("Throughput", "time=" + time[0]);
             float k = Float.parseFloat(time[0]);
 
             int status = p.waitFor();
@@ -456,7 +449,7 @@ public class WifiScanFragment extends Fragment {
         } catch (InterruptedException e) {
             result = "failed~ InterruptedException";
         } finally {
-            Log.i("Throughput","result = " + result);
+            Log.i("Throughput", "result = " + result);
         }
         return value;
     }
@@ -468,20 +461,20 @@ public class WifiScanFragment extends Fragment {
             // TODO Auto-generated method stub
             l = TrafficStats.getTotalRxBytes() - total;
             total += l;
-            Log.i("speed", "download speed: " + ((l / 1024)*8) + "kb/s");
+            Log.i("speed", "download speed: " + ((l / 1024) * 8) + "kb/s");
             handler.postDelayed(runnable, 1000);
-            download_speed.setText("Download Speed:" + ((l / 1024)*8) + " kb/s");
+            download_speed.setText("Download Speed:" + ((l / 1024) * 8) + " kb/s");
         }
     };
 
 
-    public static float download(){
+    public static float download() {
         float rate = 0;
         float latency = getdelay();
         int i;
         String download_url = "https://lh3.googleusercontent.com/upeaGdkSJ_2rr4vmYb8xND5r15UGwcnJr1MBQW8W7VFxJclJ7w1VxH-Fv_OboqrPVtxY-ASxPgWhyqRUHTQFbVIX54RNpXTGEitkgQ=w1440";
 
-        try{
+        try {
             URL url = new URL(download_url);
             float red = 0;
             float size = 0;
@@ -489,8 +482,8 @@ public class WifiScanFragment extends Fragment {
             float time1;
             byte[] buf = new byte[1024];
             long startTime = System.currentTimeMillis();
-            Log.i("Throughput","start time ="+ startTime);
-            for (i = 0; i<150 ; i++){
+            Log.i("Throughput", "start time =" + startTime);
+            for (i = 0; i < 150; i++) {
 
                 URLConnection con = url.openConnection();
 
@@ -498,7 +491,7 @@ public class WifiScanFragment extends Fragment {
                 InputStream in = con.getInputStream();
                 BufferedInputStream bis = new BufferedInputStream(in);
 
-                while ((red = bis.read(buf)) != -1){
+                while ((red = bis.read(buf)) != -1) {
                     size += red;
                 }
                 long endTime = System.currentTimeMillis();
@@ -507,24 +500,22 @@ public class WifiScanFragment extends Fragment {
 
 
             long endTime = System.currentTimeMillis();
-            time = endTime-startTime;
+            time = endTime - startTime;
             time1 = time;
 
-            Log.i("Throughput","end time : "+ endTime);
+            Log.i("Throughput", "end time : " + endTime);
 
-            Log.i("Throughput","size:"+size/1024);
-            Log.i("Throughput","time:"+time1/1000);
+            Log.i("Throughput", "size:" + size / 1024);
+            Log.i("Throughput", "time:" + time1 / 1000);
 
-            rate = (((size/1024)*8)/((time1-latency)/1000));
+            rate = (((size / 1024) * 8) / ((time1 - latency) / 1000));
 
-        }
-        catch (IOException e){
-            Log.d("Throughput","download Error:" + e);
+        } catch (IOException e) {
+            Log.d("Throughput", "download Error:" + e);
         }
         return rate;
     }
 
-
-
-
 }
+
+
