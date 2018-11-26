@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import edu.osu.table.ui.ScanActivity.ScanDatabase
 import edu.osu.table.ui.WirelessDataFolder.WirelessDatabase
+import edu.osu.table.ui.WirelessScan.Wireless2Database
 import kotlinx.android.synthetic.main.recommendation_activity.*
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -21,7 +22,7 @@ import java.util.*
 class RecommendationActivity : AppCompatActivity() {
 
     private var mDb_wireless: WirelessDatabase? = null
-    private var mDb_scan: ScanDatabase? = null
+    private var mDb_avail_wireless: Wireless2Database? = null
 
     private lateinit var mRecyclerView: RecyclerView
 
@@ -67,44 +68,88 @@ class RecommendationActivity : AppCompatActivity() {
 
     fun battery_usage ()
     {
+        val delta_battery = 0.15/4 // Battery Drop 15% Per Hour
         mDb_wireless = WirelessDatabase.getInstance(this.applicationContext)
-        //val wirelessDao = mDb_wireless?.wirelessDataDao()
-        //val scanDao = mDb_scan?.scanDataDao()
+        mDb_avail_wireless = Wireless2Database.getInstance(this.applicationContext)
 
-        var batt_delta: MutableList<Float> = mutableListOf()
-        var batt_delta_filter: MutableList<Float> = mutableListOf()
-        var temp_var:Float = (0.0).toFloat()
+        var temp_float:Float
+        var temp_long:Long
+        var date_temp:Date
+        var temp_int:Int = -1000
+        var size_db = 0
 
-        //val wirelessData = listOf(WirelessData())
+        var wirelessData = mDb_wireless?.wirelessDataDao()?.getAllBattery(96)
+        var wireless2Data = mDb_avail_wireless?.wireless2DataDao()?.getSsidAndRss(0.0)
+        //var datelist = mDb_wireless?.wirelessDataDao()?.getDates(96)
 
-        val wirelessData = mDb_wireless?.wirelessDataDao()?.getAllBattery(96)
-
-        val datelist = mDb_wireless?.wirelessDataDao()?.getDates(96)
-
-        var date_temp: Date
         val format_date = SimpleDateFormat("E 'at' h:mm a z")
         format_date.timeZone = TimeZone.getDefault()
 
+        var batt_delta: MutableList<Float> = mutableListOf()
+        var time_delta: MutableList<Long> = mutableListOf()
         var date_string: MutableList<String> = mutableListOf()
         var final_string: MutableList<String> = mutableListOf()
+        var batt_delta_filter: MutableList<Float> = mutableListOf()
 
-        var size_db = 0
         if (wirelessData != null) {
             size_db = wirelessData?.size
 
 
             if (size_db >= 2) {
                 for (i in 0..(size_db - 2)) {
-                    temp_var = wirelessData.get(i).BatteryPerc - wirelessData.get(i + 1).BatteryPerc
-                    batt_delta.add(temp_var)
+                    temp_float = wirelessData.get(i + 1).BatteryPerc - wirelessData.get(i).BatteryPerc
+                    batt_delta.add(temp_float)
+                    temp_long = wirelessData.get(i + 1).CurDate - wirelessData.get(i).CurDate
+                    time_delta.add(-temp_long)
+                    date_temp = Date(wirelessData.get(i).CurDate)
+
+                    // High Draw on Battery
+                    if (temp_float >= delta_battery) {
+                        batt_delta_filter.add(temp_float)
+                        date_string.add(format_date.format(date_temp))
+                        final_string.add("On " + format_date.format(date_temp) + " your battery drain was "
+                                + DecimalFormat("##.##").format(temp_float*400*temp_long/1000/60/60) + "% per hour." +
+                                " Consider reducing your use activity and connecting to a better wireless connection.")
+                    }
+
+                    // Poor WiFi Connection
+                    temp_long = wirelessData?.get(i)?.CurDate
+                    wireless2Data = mDb_avail_wireless?.wireless2DataDao()?.getHighRssWireless(temp_long)
+                    if (wireless2Data != null) {
+                        if (wireless2Data?.size > 0) {
+                            temp_int = wireless2Data.get(0).RSSdBm
+                        }
+                    }
+                    if (temp_int > wirelessData.get(i).RSSdBm + 5) {
+                        final_string.add("On " + format_date.format(date_temp) + " you were connected to " +
+                        wirelessData.get(i).SSID + ", however " + wireless2Data!!.get(0).SSID + " may provide higher throughtput.")
+                    }
+                    if (temp_float > 3) {
+                        // Something
+                    }
+                        // Something
+
+
+                    /*
+                    if (i >= 1){
+                        if (batt_delta.get(i-1) >= delta_battery) {
+                            batt_delta_filter.add(batt_delta.get(i-1))
+                            date_string.add(format_date.format(date_temp))
+                            final_string.add("On " + format_date.format(date_temp) + " your battery drain was "
+                                    + DecimalFormat("##.##").format(batt_delta.get(i-1)*400*temp_long/1000/60/60) + "% per hour." +
+                                    " Consider reducing your use activity and connecting to a better wireless connection.")
+                        }
+                    }
+                    */
                 }
             }
 
+            /*
             if(size_db >=1){
                 for (i in 0..(wirelessData.size-1)){
                     date_temp = Date(datelist!!.get(i))
                     if (i >= 1){
-                        if (batt_delta.get(i-1) >= 0.05) {
+                        if (batt_delta.get(i-1) >= 0.04) {
                             batt_delta_filter.add(batt_delta.get(i-1))
                             date_string.add(format_date.format(date_temp))
                             final_string.add("On " + format_date.format(date_temp) + " your battery drain was "
@@ -112,10 +157,16 @@ class RecommendationActivity : AppCompatActivity() {
                                     " Consider reducing your use activity and connecting to a better wireless connection.")
                         }
                     }
-
-
                 }
             }
+            */
+
+            if(size_db >=1){
+                //TODO: Poor Wireless Connection By LinkSpeed or RSS or Throughput
+                // Show if there is a better RSS WiFi Available as well
+            }
+
+
         }
 
         // Batt_Delta_Filter is not used here... I need to remove it

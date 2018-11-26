@@ -34,4 +34,7 @@ interface Wireless2Dao {
 
     @Query("SELECT * from wireless2Data WHERE date IS :date ORDER BY rss_dbm DESC")
     abstract  fun getSsidAndRss(date: Double): List<Wireless2Data>
+
+    @Query("SELECT * from wireless2Data WHERE date IS :date ORDER BY rss_dbm DESC")
+    abstract  fun getHighRssWireless(date: Long): List<Wireless2Data>
 }

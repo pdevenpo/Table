@@ -64,7 +64,8 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
 
             var wirelessData = WirelessData()
             var scanData = ScanData()
-            wirelessData.CurDate = System.currentTimeMillis()
+            var current_time = System.currentTimeMillis()
+            wirelessData.CurDate = current_time
             wirelessData.SSID = "4G-LTE"  // Default if no WiFi
 
             // Only record WiFi Data in Database if Connected
@@ -114,7 +115,7 @@ class MyWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
             fun stopScanning() {
                 this.applicationContext.unregisterReceiver(broadcastReceiver)
                 var wireless2Data = Wireless2Data()
-                var current_time = System.currentTimeMillis()
+                //var current_time = System.currentTimeMillis()
                 //val axisList = ArrayList<Axis>()
                 for (result in resultList) {
                     wireless2Data.CurDate = current_time
