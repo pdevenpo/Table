@@ -38,11 +38,11 @@ public class WifiActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
 
-        pingtime = (TextView)findViewById(R.id.speedWifi);
-        btn_ping = (Button)findViewById(R.id.buttonWifi);
+        pingtime = (TextView)findViewById(R.id.pinglatency);
+        btn_download = (Button)findViewById(R.id.buttonDownload);
 
         speed = (TextView)findViewById(R.id.speedDownload);
-        btn_download = (Button)findViewById(R.id.buttonDownload);
+        btn_ping = (Button)findViewById(R.id.buttonPing);
 
         download_speed =(TextView)findViewById(R.id.speed);
 
@@ -68,13 +68,17 @@ public class WifiActivity extends AppCompatActivity {
                     public void run() {
 
                         float rate = download();
-                        final String rate1 = Float.toString(rate);
+                        //final String rate1 = Float.toString(rate);
                         //speed.setText(rate1);
+
+                        int aux = (int)(rate*100);//1243
+                        final double result = aux/100d;
+
 
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                speed.setText(rate1+ " kb/s");
+                                speed.setText(result+ " Mbps");
 
                             }
                         });
@@ -97,7 +101,7 @@ public class WifiActivity extends AppCompatActivity {
             total += l;
             Log.i("speed", "download speed: " + ((l / 1024)*8) + "kb/s");
             handler.postDelayed(runnable, 1000);
-            download_speed.setText("Download Speed:" + ((l / 1024)*8) + " kb/s");
+            download_speed.setText("Download Speed:" + ((l / 1024)*8) + " kbps");
         }
     };
 
@@ -185,13 +189,14 @@ public class WifiActivity extends AppCompatActivity {
             Log.i("Throughput","size:"+size/1024);
             Log.i("Throughput","time:"+time1/1000);
 
-            rate = (((size/1024)*8)/((time1-latency)/1000));
+            rate = (((size/1024)*8)/((time1-75*latency)/1000));
+
 
         }
         catch (IOException e){
             Log.d("Throughput","download Error:" + e);
         }
-        return rate;
+        return rate/1000;
     }
 
 }

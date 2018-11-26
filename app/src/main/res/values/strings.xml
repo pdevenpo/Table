@@ -40,4 +40,8 @@
     <string name="text_current_scan_rssi_graphs">Bar Graph indicating the RSSI level of currently available Wi-Fi APs.</string>
     <string name="string_current_wifi_metric">Metrics representing current Wi-Fi AP.</string>
 
+
+    <string name="wifi_ping">Get Latency</string>
+    <string name="wifi_download">Start Speed Test</string>
+
 </resources>
