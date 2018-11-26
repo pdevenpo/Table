@@ -252,12 +252,12 @@ public class WifiScanFragment extends Fragment {
                 PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         boolean hideDialog = sharedPreferences.getBoolean(
                 getResources().getString(R.string.suppress_dialog_key), false);
-        if (!hideDialog) {
-            Log.d(TAG, "Showing permission info dialog to user");
-            FragmentManager fm = getActivity().getSupportFragmentManager();
-            DialogFragment fragment = new NoticeDialogFragment();
-            fragment.show(fm, "info_dialog");
-        }
+//        if (!hideDialog) {
+//            Log.d(TAG, "Showing permission info dialog to user");
+//            FragmentManager fm = getActivity().getSupportFragmentManager();
+//            DialogFragment fragment = new NoticeDialogFragment();
+//            fragment.show(fm, "info_dialog");
+//        }
 
         try {
             getActivity().registerReceiver(mReceiver, mIntentFilter);
@@ -287,11 +287,7 @@ public class WifiScanFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.menu_scan:
                 Log.d(TAG, "Request Wi-Fi scan");
-                if (!hasLocationPermission()) {
-                    requestLocationPermission();
-                } else {
-                    doWifiScan();
-                }
+                doWifiScan();
                 return true;
             case R.id.action_back:
                 // User chose the "Back" item, return to main activity...
@@ -303,17 +299,17 @@ public class WifiScanFragment extends Fragment {
         return false;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PERMISSION_REQUEST_LOCATION) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                doWifiScan();
-            } else {
-                Log.e(TAG, "Error: Permission denied to read location");
-                Toast.makeText(getActivity(), getResources().getString(R.string.read_location_permission_denied), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        if (requestCode == PERMISSION_REQUEST_LOCATION) {
+//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                doWifiScan();
+//            } else {
+//                Log.e(TAG, "Error: Permission denied to read location");
+//                Toast.makeText(getActivity(), getResources().getString(R.string.read_location_permission_denied), Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
 
     private void setupWifi() {
         try {
@@ -332,14 +328,14 @@ public class WifiScanFragment extends Fragment {
                 == PackageManager.PERMISSION_GRANTED;
     }
 
-    private void requestLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!hasLocationPermission()) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        PERMISSION_REQUEST_LOCATION);
-            }
-        }
-    }
+//    private void requestLocationPermission() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (!hasLocationPermission()) {
+//                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+//                        PERMISSION_REQUEST_LOCATION);
+//            }
+//        }
+//    }
 
     private void doWifiScan() {
         if (mWifiManager == null) {
