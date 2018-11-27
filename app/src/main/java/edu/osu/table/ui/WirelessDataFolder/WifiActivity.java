@@ -8,11 +8,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.*;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import edu.osu.table.R;
 import android.util.Log;
@@ -25,6 +25,8 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import com.github.mikephil.charting.charts.PieChart;
+import edu.osu.table.ui.graph.HourAxisValueFormatter;
+
 import static com.google.common.collect.Lists.reverse;
 
 public class WifiActivity extends AppCompatActivity {
@@ -40,6 +42,7 @@ public class WifiActivity extends AppCompatActivity {
     private String[] xDATA = new String[96];
 
     PieChart pieChart;
+    LineChart lineChart;
 
 
     @Override
@@ -75,6 +78,8 @@ public class WifiActivity extends AppCompatActivity {
         pieChart.setHoleRadius(25f);
         pieChart.setTransparentCircleAlpha(0);
         pieChart.getDescription().setEnabled(false);
+
+        lineChart = (LineChart)findViewById(R.id.wifithroughput);
 
 
         wireless_database = WirelessDatabase.Companion.getInstance(this);
@@ -124,6 +129,7 @@ public class WifiActivity extends AppCompatActivity {
 
 
         getdataandplot();
+        plotlinechart();
     }
 
 
@@ -352,6 +358,50 @@ public class WifiActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+
+    public void plotlinechart(){
+
+        List<WirelessData> onedaydbdata;
+        onedaydbdata = reverse(wireless_database.wirelessDataDao().getAllBattery(96));
+        float throughput[] = new float[96];
+        long date[] = new long[96];
+        Long referenceTime = onedaydbdata.get(0).getCurDate();
+
+        ArrayList<Entry> values = new ArrayList<>();
+        LineDataSet lineDataSet;
+
+        int i;
+
+        for (i=0; i< onedaydbdata.size(); i++)
+        {
+            Log.i("VALUE", Integer.toString(i));
+            double rate =onedaydbdata.get(i).getThroughputMpbs();
+            throughput[i]=(float)(Math.round(rate*100)/100);
+            Log.i("value arr:",String.valueOf(throughput[i]));
+        }
+
+        for(i=0; i<onedaydbdata.size();i++){
+            long DATE = onedaydbdata.get(i).getCurDate();
+            date[i]=DATE;
+        }
+
+        for (i=0;i<onedaydbdata.size();i++){
+            values.add(new Entry(date[i]-referenceTime,throughput[i]));
+        }
+
+        lineDataSet=new LineDataSet(values,"Throughput Within Past 24 Hours / Mbps");
+        HourAxisValueFormatter xAxisFormatter = new HourAxisValueFormatter(referenceTime);
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setValueFormatter(xAxisFormatter);
+        xAxis.enableGridDashedLine(10f, 10f, 0f);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        lineChart.setData(new LineData(lineDataSet));
+
+
+
     }
 
 }
