@@ -17,5 +17,6 @@
     <color name="dividerColor">#BDBDBD</color>
     <color name="white">#ffff</color>
     <color name="black">#000000</color>
+    <color name="graphTextColor">#000000</color>
 
 </resources>

@@ -19,7 +19,7 @@ public class HourAxisValueBarAxisFormatter implements IAxisValueFormatter
 
     public HourAxisValueBarAxisFormatter(List<Long> referenceTimestamp) {
         this.referenceTimestamp = referenceTimestamp;
-        this.mDataFormat = new SimpleDateFormat("HH:mm a", Locale.ENGLISH);
+        this.mDataFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
         this.mDate = new Date();
     }
 

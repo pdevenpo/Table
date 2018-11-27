@@ -31,6 +31,8 @@
                 android:id="@+id/text_pie_graphs"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:textColor="@color/graphTextColor"
                 android:contentDescription="@string/text_pie_graphs"/>
 
         <com.github.mikephil.charting.charts.PieChart
@@ -50,6 +52,10 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="10dp">
         </com.github.mikephil.charting.charts.PieChart>
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@android:color/darker_gray"/>
 
         <TextView
                 android:text="@string/text_battery_line_graphs"
@@ -58,6 +64,8 @@
                 android:id="@+id/text_battery_line_graphs"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:textColor="@color/graphTextColor"
                 android:contentDescription="@string/text_battery_line_graphs"/>
 
         <com.github.mikephil.charting.charts.LineChart
@@ -67,6 +75,7 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="10dp">
         </com.github.mikephil.charting.charts.LineChart>
+
         <com.github.mikephil.charting.charts.LineChart
                 android:layout_width="373dp"
                 android:layout_height="246dp"
@@ -83,6 +92,10 @@
                 android:layout_marginTop="10dp">
         </com.github.mikephil.charting.charts.LineChart>
 
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@android:color/darker_gray"/>
         <TextView
                 android:text="@string/text_overall_battery_line_graph"
                 android:layout_width="match_parent"
@@ -90,6 +103,8 @@
                 android:id="@+id/text_overall_battery_line_graphs"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:textColor="@color/graphTextColor"
                 android:contentDescription="@string/text_overall_battery_line_graph"/>
 
         <com.github.mikephil.charting.charts.LineChart
@@ -99,6 +114,10 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="10dp">
         </com.github.mikephil.charting.charts.LineChart>
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@android:color/darker_gray"/>
 
         <TextView
                 android:text="@string/text_RSSI_bar_line_graphs"
@@ -107,6 +126,8 @@
                 android:id="@+id/text_RSSI_bar_line_graphs"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:textColor="@color/graphTextColor"
                 android:contentDescription="@string/text_RSSI_bar_line_graphs"/>
 
         <com.github.mikephil.charting.charts.BarChart
@@ -124,6 +145,10 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="10dp">
         </com.github.mikephil.charting.charts.LineChart>
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
 
         <com.github.mikephil.charting.charts.BarChart
                 android:layout_width="373dp"
@@ -140,6 +165,10 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="10dp">
         </com.github.mikephil.charting.charts.LineChart>
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
 
         <com.github.mikephil.charting.charts.BarChart
                 android:layout_width="373dp"
@@ -157,6 +186,11 @@
                 android:layout_marginTop="10dp">
         </com.github.mikephil.charting.charts.LineChart>
 
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@android:color/darker_gray"/>
+
         <TextView
                 android:text="@string/text_current_scan_rssi_graphs"
                 android:layout_width="match_parent"
@@ -164,6 +198,8 @@
                 android:id="@+id/text_current_scan_rssi_graphs"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:textColor="@color/graphTextColor"
                 android:contentDescription="@string/text_current_scan_rssi_graphs"/>
 
         <com.github.mikephil.charting.charts.BarChart
@@ -173,6 +209,10 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="10dp">
         </com.github.mikephil.charting.charts.BarChart>
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@android:color/darker_gray"/>
 
         <TextView
                 android:text="@string/string_current_wifi_metric"
@@ -181,6 +221,8 @@
                 android:id="@+id/text_current_wifi_metric"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:textColor="@color/graphTextColor"
                 android:contentDescription="@string/string_current_wifi_metric"/>
 
         <com.github.mikephil.charting.charts.BarChart

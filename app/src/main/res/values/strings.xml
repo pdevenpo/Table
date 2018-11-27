@@ -36,7 +36,7 @@
     <string name="text_pie_graphs">Pie Graphs indicating overall charging and discharging over a particular WiFi AP.</string>
     <string name="text_battery_line_graphs">Line Graphs indicating the battery consumption over a particular Wi-Fi AP.</string>
     <string name="text_RSSI_bar_line_graphs">Bar Graph and Line Graphs indicating the RSSI and Link Speed of few strong Wi-Fi APs.</string>
-    <string name="text_overall_battery_line_graph">Line Graph indicating the battery the overall battery consumption.</string>
+    <string name="text_overall_battery_line_graph">Line Graph indicating the overall battery consumption.</string>
     <string name="text_current_scan_rssi_graphs">Bar Graph indicating the RSSI level of currently available Wi-Fi APs.</string>
     <string name="string_current_wifi_metric">Metrics representing current Wi-Fi AP.</string>
 

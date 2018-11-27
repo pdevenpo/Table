@@ -71,7 +71,7 @@ public class GraphMainActivityChart {
         yAxis.setAxisMaximum(100f);
         yAxis.setAxisMinimum(0f);
 
-        LimitLine ll1 = new LimitLine(80f, "Upper Limit");
+        LimitLine ll1 = new LimitLine(80f, "80%");
         ll1.setLineWidth(4f);
         ll1.enableDashedLine(10f, 10f, 0f);
         ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
@@ -79,7 +79,7 @@ public class GraphMainActivityChart {
         ll1.setLineColor(Color.BLUE);
         //ll1.setTypeface(tfRegular);
 
-        LimitLine ll2 = new LimitLine(40f, "Lower Limit");
+        LimitLine ll2 = new LimitLine(20f, "20%");
         ll2.setLineWidth(4f);
         ll2.enableDashedLine(10f, 10f, 0f);
         ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);

@@ -309,6 +309,9 @@ public class GraphActivity extends AppCompatActivity {
         PieChart battery_pie_chart_discharge = (PieChart) findViewById(R.id.battery_pie_chart_discharge);
         PieChart battery_pie_chart_charge = (PieChart) findViewById(R.id.battery_pie_chart_charge);
 
+        //battery_pie_chart_charge.setBackgroundColor(Color.rgb(60, 65, 82));
+        //battery_pie_chart_discharge.setBackgroundColor(Color.rgb(60, 65, 82));
+
         battery_pie_chart_discharge.setData(dataDischarge);
         battery_pie_chart_charge.setData(dataCharge);
 
@@ -323,6 +326,12 @@ public class GraphActivity extends AppCompatActivity {
 
         battery_pie_chart_charge.setUsePercentValues(true);
         battery_pie_chart_discharge.setUsePercentValues(true);
+
+        //Legend l = battery_pie_chart_charge.getLegend();
+        //l.setTextColor(Color.WHITE);
+
+        //l = battery_pie_chart_discharge.getLegend();
+        //l.setTextColor(Color.WHITE);
 
         //battery_pie_chart_charge.getLegend().setTextColor(Color.BLACK);
         battery_pie_chart_discharge.invalidate();
@@ -447,7 +456,7 @@ public class GraphActivity extends AppCompatActivity {
         // set color of filled area
         if (Utils.getSDKInt() >= 18) {
             // drawables only supported on api level 18 and above
-            Drawable drawable = ContextCompat.getDrawable(this, R.drawable.fade_red);
+            Drawable drawable = ContextCompat.getDrawable(this, R.drawable.fade_new);
             set1.setFillDrawable(drawable);
         } else {
             set1.setFillColor(Color.BLACK);
@@ -514,14 +523,15 @@ public class GraphActivity extends AppCompatActivity {
         set1.setFillFormatter(new IFillFormatter() {
             @Override
             public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
-                return iterLineChart.getAxisLeft().getAxisMinimum();
+                return 0;
+                //return iterLineChart.getAxisLeft().getAxisMinimum();
             }
         });
 
         // set color of filled area
         if (Utils.getSDKInt() >= 18) {
             // drawables only supported on api level 18 and above
-            Drawable drawable = ContextCompat.getDrawable(this, R.drawable.fade_red);
+            Drawable drawable = ContextCompat.getDrawable(this, R.drawable.fade_new);
             set1.setFillDrawable(drawable);
         } else {
             set1.setFillColor(Color.BLACK);
@@ -685,7 +695,7 @@ public class GraphActivity extends AppCompatActivity {
         yAxis.setAxisMaximum(100f);
         yAxis.setAxisMinimum(0f);
 
-        LimitLine ll1 = new LimitLine(80f, "Upper Limit");
+        LimitLine ll1 = new LimitLine(80f, "80%");
         ll1.setLineWidth(4f);
         ll1.enableDashedLine(10f, 10f, 0f);
         ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
@@ -693,7 +703,7 @@ public class GraphActivity extends AppCompatActivity {
         ll1.setLineColor(Color.BLUE);
         //ll1.setTypeface(tfRegular);
 
-        LimitLine ll2 = new LimitLine(40f, "Lower Limit");
+        LimitLine ll2 = new LimitLine(20f, "20%");
         ll2.setLineWidth(4f);
         ll2.enableDashedLine(10f, 10f, 0f);
         ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
@@ -897,7 +907,7 @@ public class GraphActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.menu_onlyback, menu);
         return true;
     }
 
