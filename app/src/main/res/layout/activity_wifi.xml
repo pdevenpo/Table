@@ -57,15 +57,30 @@
                     style="@style/Widget.AppCompat.Button.Colored"
 
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"  android:layout_weight="1"/>
+                    android:layout_height="wrap_content" android:layout_weight="1"/>
             <Button
                     android:text="@string/wifi_download"
                     android:id="@+id/buttonDownload"
                     style="@style/Widget.AppCompat.Button.Colored"
 
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"  android:layout_weight="1"/>
+                    android:layout_height="wrap_content" android:layout_weight="1"/>
+
+
         </LinearLayout>
+        <TextView
+                android:text="@string/wifi_plot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:textColor="@color/accentColor"
+                android:id="@+id/wifiplot1"/>
+
+        <com.github.mikephil.charting.charts.PieChart
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:id="@+id/wificonnection"></com.github.mikephil.charting.charts.PieChart>
 
 
     </LinearLayout>

@@ -1,41 +1,65 @@
 package edu.osu.table.ui.WirelessDataFolder;
-
+import android.graphics.Color;
 import android.net.TrafficStats;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import edu.osu.table.R;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-
+import java.util.ArrayList;
+import java.util.List;
+import com.github.mikephil.charting.charts.PieChart;
+import static com.google.common.collect.Lists.reverse;
 
 public class WifiActivity extends AppCompatActivity {
-
     private Button btn_ping;
     private Button btn_download;
-
     private TextView pingtime;
     private TextView speed;
-
     private long l, total;
     private Handler handler = new Handler();
     private TextView download_speed;
+    private WirelessDatabase wireless_database = null;
+    private float[] yDATA = new float[96];
+    private String[] xDATA = new String[96];
 
+    PieChart pieChart;
 
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home)
+        {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wifi);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
 
         pingtime = (TextView)findViewById(R.id.pinglatency);
@@ -45,6 +69,16 @@ public class WifiActivity extends AppCompatActivity {
         btn_ping = (Button)findViewById(R.id.buttonPing);
 
         download_speed =(TextView)findViewById(R.id.speed);
+
+
+        pieChart = (PieChart)findViewById(R.id.wificonnection);
+        pieChart.setHoleRadius(25f);
+        pieChart.setTransparentCircleAlpha(0);
+        pieChart.getDescription().setEnabled(false);
+
+
+        wireless_database = WirelessDatabase.Companion.getInstance(this);
+
 
         total = TrafficStats.getTotalRxBytes();
         handler.postDelayed(runnable, 1000);
@@ -68,8 +102,6 @@ public class WifiActivity extends AppCompatActivity {
                     public void run() {
 
                         float rate = download();
-                        //final String rate1 = Float.toString(rate);
-                        //speed.setText(rate1);
 
                         int aux = (int)(rate*100);//1243
                         final double result = aux/100d;
@@ -90,7 +122,42 @@ public class WifiActivity extends AppCompatActivity {
             }
         });
 
+
+        getdataandplot();
     }
+
+
+
+    private void addDataSet() {
+        Log.d("plotting", "addDataSet Started");
+        ArrayList<PieEntry> yEntrys = new ArrayList<>();
+        ArrayList<String> xEntrys = new ArrayList<>();
+
+        for (int i = 0; i < yDATA.length; i++) {
+            yEntrys.add(new PieEntry(yDATA[i], i));
+        }
+
+        for (int i = 0; i < xDATA.length; i++) {
+            xEntrys.add(xDATA[i]);
+        }
+
+        PieDataSet pieDataSet = new PieDataSet(yEntrys, "issd:");
+        pieDataSet.setSliceSpace(2);
+        pieDataSet.setValueTextSize(20);
+
+        ArrayList<Integer> colors = new ArrayList<>();
+        colors.add(Color.YELLOW);
+        colors.add(Color.GREEN);
+        colors.add(Color.BLUE);
+        colors.add(Color.DKGRAY);
+        pieDataSet.setColors(colors);
+
+        PieData pieData = new PieData(pieDataSet);
+        pieChart.setData(pieData);
+        pieChart.invalidate();
+    }
+
+
 
     private Runnable runnable = new Runnable() {
 
@@ -107,11 +174,8 @@ public class WifiActivity extends AppCompatActivity {
 
 
     public static float getdelay(){
-
         String result = null;
         float value = 0;
-
-
         try {
             Process p = Runtime.getRuntime().exec("ping -c 1 -w 1 www.google.com");
             InputStream input = p.getInputStream();
@@ -124,8 +188,6 @@ public class WifiActivity extends AppCompatActivity {
             Log.i("Throughput", "result content : " + stringBuffer.toString());
             String arr[] = stringBuffer.toString().split("=");
             String time[] = arr[3].split(" ");
-
-
             Log.i("Throughput","time=" + time[0]);
             float k = Float.parseFloat(time[0]);
 
@@ -175,7 +237,7 @@ public class WifiActivity extends AppCompatActivity {
                 while ((red = bis.read(buf)) != -1){
                     size += red;
                 }
-                long endTime = System.currentTimeMillis();
+
 
             }
 
@@ -185,7 +247,6 @@ public class WifiActivity extends AppCompatActivity {
             time1 = time;
 
             Log.i("Throughput","end time : "+ endTime);
-
             Log.i("Throughput","size:"+size/1024);
             Log.i("Throughput","time:"+time1/1000);
 
@@ -197,6 +258,100 @@ public class WifiActivity extends AppCompatActivity {
             Log.d("Throughput","download Error:" + e);
         }
         return rate/1000;
+    }
+
+
+    public void getdataandplot(){
+        List<WirelessData> onedaydbdata = new ArrayList<WirelessData>();
+        onedaydbdata = reverse(wireless_database.wirelessDataDao().getAllBattery(96));
+        //List<String> allAccessPts_ssid = new ArrayList<String>();
+        String arr[] = new String[96];
+        final String data[] = new String[96];
+        float numer[] =new float[96];
+
+        int count=0;
+        int i,j;
+        int in = 0;
+        boolean isEqual = false;
+
+        for (i=0; i< onedaydbdata.size(); i++)
+        {
+            Log.i("VALUE", Integer.toString(i));
+            String ssid =onedaydbdata.get(i).getSSID();
+            arr[i]=ssid;
+            //allAccessPts_ssid.add(ssid);
+            Log.i("value arr:",arr[i]);
+        }
+
+        for (i=0; i<96 ; i++){  //arr
+            if(i==0){
+                data[i]=arr[i]; // first array to data
+                in++;
+                Log.i("Freq",data[i]);
+            }
+            for(j=0;j<data.length;j++){
+                isEqual = arr[i].equals(data[j]);
+                if(isEqual){
+                    break;
+                }
+            }
+            if(!isEqual){
+                data[in]=arr[i];
+                Log.i("Freq",data[in]);
+                in++;
+            }
+        }
+
+        for (i=0;i<data.length;i++){
+            count=0;
+            for(j=0;j<arr.length;j++){
+                if(arr[j].equals(data[i])==true){
+                    count=count+1;
+                }
+            }
+            if(count!=0) {
+                numer[i] = count;
+                Log.i("VALUE I", String.valueOf(i));
+                Log.i("VALUE number", String.valueOf(numer[i]));
+            }
+        }
+
+        for (i=0;i<data.length;i++){
+            xDATA[i]=data[i];
+            float round = (float)(Math.round(numer[i]/96*100)*10000/10000);
+            yDATA[i]=round;
+        }
+
+        addDataSet();
+
+        pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                Log.d("VALUE","value select from chart");
+                Log.d("VALUE",e.toString());
+                Log.d("VALUE",h.toString());
+
+                int pos1 = e.toString().indexOf("x: 0.0 y: ");
+                String ssid = e.toString().substring(pos1+10);
+
+                for(int m =0;m <yDATA.length;m++){
+                    if(yDATA[m]==Float.parseFloat(ssid)){
+                        pos1 = m;
+                        break;
+                    }
+
+                }
+
+
+                String SSID = xDATA[pos1];
+                Toast.makeText(WifiActivity.this, "SSID: "+ SSID +"\n"+"Time: "+ssid+"%", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
     }
 
 }

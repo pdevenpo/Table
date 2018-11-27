@@ -43,5 +43,6 @@
 
     <string name="wifi_ping">Get Latency</string>
     <string name="wifi_download">Start Speed Test</string>
+    <string name="wifi_plot">\nWIFIs You Connected To Within Past 24 Hours\n</string>
 
 </resources>

@@ -32,4 +32,9 @@ interface WirelessDao {
     @Query("SELECT date FROM wirelessData ORDER BY date DESC LIMIT :value")
     abstract fun getDates(value: Int): List<Long>
 
+
+
+
+
+
 }
