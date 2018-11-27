@@ -3,20 +3,22 @@ package edu.osu.table.ui.RecommendationsActivity
 import android.content.Context
 import android.support.constraint.R.id.parent
 import android.support.v7.widget.RecyclerView
+import android.text.Html
+import android.text.Html.fromHtml
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import edu.osu.table.R
 import kotlinx.android.synthetic.main.recommendation_item.view.*
 
-class BatteryAdapter (val date_list: List<String>, val bat_delta: List<Float>,
+class BatteryAdapter (val date_list: List<String>,
                      val context: Context) : RecyclerView.Adapter<ViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.recommendation_item, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder?.recommendationtype?.text = date_list.get(position)
+        holder?.recommendationtype?.text = Html.fromHtml(date_list.get(position))
     }
 
     override fun getItemCount(): Int {
