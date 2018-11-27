@@ -95,25 +95,12 @@ public class WifiScanFragment extends Fragment {
     public String bestSSID = "";
 
 
-    /*
-     * ************************************************************************
-     * Declare a Broadcast Receiver that "responds" to Android system Intents.
-     * In our case, we only want to display the results of a WiFi scan, which
-     * are made available when the SCAN_RESULTS_AVAILABLE_ACTION fires (after
-     * the scan is completed).
-     * ************************************************************************
-     */
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         // Override onReceive() method to implement our custom logic.
         @Override
         public void onReceive(Context context, Intent intent) {
-            // Get the Intent action.
             String action = intent.getAction();
-            // If the WiFi scan results are ready, iterate through them and
-            // record the WiFi APs' SSIDs, BSSIDs, WiFi capabilities, radio
-            // frequency, and signal strength (in dBm).
             if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(action)) {
-                // Ensure WifiManager is not null first.
                 if (mWifiManager == null) {
                     setupWifi();
                 }
@@ -126,14 +113,7 @@ public class WifiScanFragment extends Fragment {
         }
     };
 
-    /**
-     * Inflate the Fragment view for Wi-Fi scans.
-     *
-     * @param inflater           LayoutInflater that inflates XML view
-     * @param container          The parent view container
-     * @param savedInstanceState Any previous saved state
-     * @return Created Fragment
-     */
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -146,9 +126,7 @@ public class WifiScanFragment extends Fragment {
         //onclick listener for wifi_button to connect to a new wifi
         Button wifi_button_5G = (Button) v.findViewById(R.id.connect_wifi_5G);
         wifi_button.setOnClickListener(new View.OnClickListener() {
-            //-54 is a better signal than -80 dbm
-            //2.4 or 5.5 better freq?
-            //TODO force a wifi connection based on BSSID
+
             @Override
             public void onClick(View view) {
                 if (mWifiManager.isWifiEnabled()) {
@@ -159,7 +137,7 @@ public class WifiScanFragment extends Fragment {
                     config.allowedPairwiseCiphers.clear();
                     config.allowedProtocols.clear();
                     config.SSID = "\"" + bestSSID + "\"";
-                    config.BSSID = bestBSSID; // <--BSSID should be set without ->"<-
+                    config.BSSID = bestBSSID;
                     List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();
                     for (WifiConfiguration existingConfig : existingConfigs) {
                         if (null != existingConfig && existingConfig.SSID.toString().equals("\"" + "osuwireless" + "\"")) {
@@ -181,7 +159,7 @@ public class WifiScanFragment extends Fragment {
                     config.allowedPairwiseCiphers.clear();
                     config.allowedProtocols.clear();
                     config.SSID = "\"" + bestSSID + "\"";
-                    config.BSSID = bestBSSID; // <--BSSID should be set without ->"<-
+                    config.BSSID = bestBSSID;
                     List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();
                     for (WifiConfiguration existingConfig : existingConfigs) {
                         if (null != existingConfig && existingConfig.SSID.toString().equals("\"" + "osuwireless" + "\"")) {
@@ -252,12 +230,7 @@ public class WifiScanFragment extends Fragment {
                 PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         boolean hideDialog = sharedPreferences.getBoolean(
                 getResources().getString(R.string.suppress_dialog_key), false);
-//        if (!hideDialog) {
-//            Log.d(TAG, "Showing permission info dialog to user");
-//            FragmentManager fm = getActivity().getSupportFragmentManager();
-//            DialogFragment fragment = new NoticeDialogFragment();
-//            fragment.show(fm, "info_dialog");
-//        }
+
 
         try {
             getActivity().registerReceiver(mReceiver, mIntentFilter);
@@ -299,17 +272,7 @@ public class WifiScanFragment extends Fragment {
         return false;
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        if (requestCode == PERMISSION_REQUEST_LOCATION) {
-//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                doWifiScan();
-//            } else {
-//                Log.e(TAG, "Error: Permission denied to read location");
-//                Toast.makeText(getActivity(), getResources().getString(R.string.read_location_permission_denied), Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
+
 
     private void setupWifi() {
         try {
@@ -328,14 +291,7 @@ public class WifiScanFragment extends Fragment {
                 == PackageManager.PERMISSION_GRANTED;
     }
 
-//    private void requestLocationPermission() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (!hasLocationPermission()) {
-//                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-//                        PERMISSION_REQUEST_LOCATION);
-//            }
-//        }
-//    }
+
 
     private void doWifiScan() {
         if (mWifiManager == null) {
@@ -378,6 +334,16 @@ public class WifiScanFragment extends Fragment {
             wifiMacAddress = mScanResult.BSSID;
             wifiRssDbm = mScanResult.level;
             wifiSecurity = mScanResult.capabilities;
+            if(wifiSecurity.contains("WPA2")){
+                wifiSecurity = "WPA2";
+            }else if(wifiSecurity.contains("WEP")){
+                wifiSecurity = "WEP";
+            }else if(wifiSecurity.contains("WPA")){
+                wifiSecurity = "WPA";
+            }else{
+                wifiSecurity = "None";
+
+            }
             wifiSSID = mScanResult.SSID;
 
 
@@ -388,7 +354,7 @@ public class WifiScanFragment extends Fragment {
 
             String resultTextStr = "WIFI NAME: " + mScanResult.SSID + "; " + '\n' +
                     "BSSID: " + mScanResult.BSSID + "; " + '\n' +
-                    "SECURITY: " + mScanResult.capabilities + "; " + '\n' +
+                    "SECURITY: " + wifiSecurity + "; " + '\n' +
                     "FREQUENCY: " + mScanResult.frequency + " MHz;" + '\n' +
                     "RSS: " + mScanResult.level + " dBm";
             wifiID++;
