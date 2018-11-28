@@ -296,6 +296,9 @@ public class WifiActivity extends AppCompatActivity {
                 Log.i("Freq",data[i]);
             }
             for(j=0;j<data.length;j++){
+                if(data[j] == null || arr[i] == null){
+                    break;
+                }
                 isEqual = arr[i].equals(data[j]);
                 if(isEqual){
                     break;
@@ -311,6 +314,9 @@ public class WifiActivity extends AppCompatActivity {
         for (i=0;i<data.length;i++){
             count=0;
             for(j=0;j<arr.length;j++){
+                if(data[j] == null || arr[i] == null){
+                    break;
+                }
                 if(arr[j].equals(data[i])==true){
                     count=count+1;
                 }

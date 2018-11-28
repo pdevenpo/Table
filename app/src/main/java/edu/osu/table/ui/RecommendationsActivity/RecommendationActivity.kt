@@ -35,8 +35,6 @@ class RecommendationActivity : AppCompatActivity() {
         recycle_rec.layoutManager = LinearLayoutManager(this)
 
         battery_usage()
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -53,12 +51,6 @@ class RecommendationActivity : AppCompatActivity() {
             true
 
         }
-
-        //TODO make a navigation drawer open as result of click
-        /*R.id.action_menu -> {
-            true
-        }*/
-
         else -> {
             // If we got here, the user's action was not recognized.
             // Invoke the superclass to handle it.
